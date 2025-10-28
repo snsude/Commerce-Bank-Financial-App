@@ -1,6 +1,7 @@
 import './index.css';
 import React from 'react'; 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom' 
+import NavBar from './pages/NavBar'
 import Login from './pages/Login'
 import NewUser from './pages/NewUser'
 import Dashboard from './pages/Dashboard'
@@ -9,10 +10,12 @@ import Settings from './pages/Settings'
 import ChatBot  from './pages/Chatbot';
 
 
+
 function App() {
   return (
     <Router>
       <div className='App'>
+        <NavBar />
         <Routes>
           <Route path="/" element={<Navigate to="/Login" replace />} />
           <Route path="/Login" element={<Login />}/>
