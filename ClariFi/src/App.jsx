@@ -15,7 +15,6 @@ function App() {
   return (
     <Router>
       <div className='App'>
-        <NavBar />
         <Routes>
           <Route path="/" element={<Navigate to="/Login" replace />} />
           <Route path="/Login" element={<Login />}/>

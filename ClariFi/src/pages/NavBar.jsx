@@ -9,14 +9,14 @@ export default function Sidebar() {
       className={`flex flex-col items-center text-white shadow h-screen transition-all duration-300 ${
         isExpanded ? 'w-64' : 'w-20'
       }`}
-      style={{backgroundColor: '#7D5BA6'}}
+      style={{backgroundColor: '#174D1F'}}
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >
       {/* Profile Circle */}
       <div className="h-16 flex items-center w-full justify-center px-4">
         <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center text-gray-700 font-semibold flex-shrink-0">
-          JD
+          
         </div>
       </div>
 
@@ -92,17 +92,21 @@ export default function Sidebar() {
         </li>
       </ul>
 
-      {/* Logo and Settings */}
-      <div className="w-full">
-        {/* Logo */}
-        <div className="h-16 flex items-center px-6 w-full border-t border-purple-400">
-          <div className="h-8 w-8 bg-white rounded flex items-center justify-center text-gray-700 font-bold text-sm flex-shrink-0">
-            L
-          </div>
-          {isExpanded && (
-            <span className="ml-4 text-sm font-medium whitespace-nowrap">Logo</span>
-          )}
-        </div>
+      {/* Logo Section */}
+      <div
+        className="h-20 flex items-center justify-center w-full transition-all duration-500 ease-in-out"
+      >
+      <img
+        src={isExpanded ? "/ClariFi-Logo.png" : "/ClariFi-Logo-Small.png"} // adjust file paths
+        alt="Logo"
+        className={`object-contain transition-all duration-100 ${
+          isExpanded ? 'h-10 w-auto' : 'h-14 w-14'
+        }`}
+        style={{
+          filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))' // soft modern shadow
+        }}
+      />
+      </div>
 
         {/* Settings */}
         <div className="h-16 flex items-center w-full border-t border-purple-400">
@@ -126,8 +130,7 @@ export default function Sidebar() {
               <span className="ml-4 text-sm font-medium whitespace-nowrap">Settings</span>
             )}
           </button>
-        </div>
-      </div>
+        </div> 
     </aside>
   );
 }

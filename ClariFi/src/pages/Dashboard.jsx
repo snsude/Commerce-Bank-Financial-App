@@ -1,146 +1,228 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import NavBar from './NavBar'; 
 
 export default function Dashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState([
+    { text: "Hi! I'm your financial assistant. How can I help you today?", isBot: true }
+  ]);
+  const [chatInput, setChatInput] = useState('');
+  const chatContainerRef = useRef(null);
 
-//THESE ARE JUST THE COMPONENTS PULLED FROM TAILWIND WEBSITE AS PLACEHOLDER
-
-  const navItems = [
-    { name: 'Dashboard', active: true },
-    { name: 'Categories', active: false },
-    { name: 'Reports', active: false },
-    { name: 'Other data', active: false },
-    { name: 'Finance', active: false }
+  const recentPurchases = [
+    { id: 1, item: 'Laptop', date: '2024-11-01', amount: '$1,299.99' },
+    { id: 2, item: 'Wireless Mouse', date: '2024-11-02', amount: '$29.99' },
+    { id: 3, item: 'USB-C Cable', date: '2024-11-03', amount: '$15.99' },
+    { id: 4, item: 'Headphones', date: '2024-10-28', amount: '$89.99' },
+    { id: 5, item: 'Desk Lamp', date: '2024-10-25', amount: '$45.50' },
+    { id: 6, item: 'Coffee Subscription', date: '2024-10-22', amount: '$24.99' },
   ];
 
-  const globalActivitiesData = [
-    { name: 'Tailored ui', value: '896' },
-    { name: 'Customize', value: '1200' },
-    { name: 'Other', value: '12' }
+  const expenseCategories = [
+    { name: 'Food', value: 450, color: '#A28BC0' },
+    { name: 'Transport', value: 200, color: '#9FD6A7' },
+    { name: 'Entertainment', value: 150, color: '#FFD588' },
+    { name: 'Utilities', value: 300, color: '#FFA8C3' },
+    { name: 'Other', value: 100, color: '#8DC8F1' }
   ];
 
-  const downloadsData = [
-    { name: 'From new users', value: '896' },
-    { name: 'From old users', value: '1200' }
+  const goals = [
+    { name: 'Emergency Fund', current: 3500, target: 5000 },
+    { name: 'Vacation', current: 800, target: 2000 },
+    { name: 'New Laptop', current: 650, target: 1500 }
   ];
 
-  const customizeData = [
-    { name: 'Tailored ui', value: '896' },
-    { name: 'Customize', value: '1200' },
-    { name: 'Other', value: '12' }
-  ];
+  // chat orientation
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
+
+
+  const goalHeaderColor = '#B3E4B8';
+  const goalContentColor = '#DFF4E1';
+
+ 
+  const cardShadow = {
+    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+  };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
-     
-      {/* Main Content */}
-      <div className="ml-auto mb-6 lg:w-[75%] xl:w-[80%] 2xl:w-[85%]">
-        {/* Header */}
-        <div className="sticky z-10 top-0 h-16 border-b bg-white lg:py-2.5">
-          <div className="px-6 flex items-center justify-between space-x-4 2xl:container">
-            <h5 className="hidden text-2xl text-gray-600 font-medium lg:block">Dashboard</h5>
-            <button 
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="w-12 h-16 -mr-2 border-r lg:hidden"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+    <div className="flex h-screen w-screen overflow-hidden" style={{ backgroundColor: '#E0E0E0' }}>
+      <NavBar />
+      <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-6 p-6">
+
+        {/*RECENT PURCHASES*/}
+        <div
+          className="rounded-xl border-4 bg-white overflow-hidden"
+          style={{ borderColor: '#89CE94', ...cardShadow }}
+        >
+          <div style={{ backgroundColor: '#7D5BA6', color: 'white', fontSize: '26px', textAlign: 'center', padding: '10px 0', fontFamily: 'Carme, sans-serif' }}>
+            Recent Purchases
+          </div>
+          <div className="p-4 overflow-y-auto" style={{ height: 'calc(100% - 60px)' }}>
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left py-2 px-4">Item</th>
+                  <th className="text-left py-2 px-4">Date</th>
+                  <th className="text-right py-2 px-4">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentPurchases.map(p => (
+                  <tr key={p.id} className="border-b hover:bg-gray-50">
+                    <td className="py-3 px-4">{p.item}</td>
+                    <td className="py-3 px-4">{p.date}</td>
+                    <td className="py-3 px-4 text-right">{p.amount}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/*EXPENSE CATEGORIES*/}
+        <div
+          className="rounded-xl border-4 bg-white overflow-hidden"
+          style={{ borderColor: '#89CE94', ...cardShadow }}
+        >
+          <div style={{ backgroundColor: '#7D5BA6', color: 'white', fontSize: '26px', textAlign: 'center', padding: '10px 0', fontFamily: 'Carme, sans-serif' }}>
+            Expense Categories
+          </div>
+
+          <div className="flex h-full" style={{ height: 'calc(100% - 60px)' }}>
+            {/* Left side: Category list */}
+            <div className="w-1/2 p-6 space-y-2 flex flex-col justify-center">
+              {expenseCategories.map((cat, i) => (
+                <div key={i} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div style={{ width: 16, height: 16, backgroundColor: cat.color, borderRadius: 4 }}></div>
+                    <span>{cat.name}</span>
+                  </div>
+                  <span className="font-semibold">${cat.value}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Right side: Pie chart */}
+            <div className="w-1/2 flex justify-center items-center">
+              <svg width="180" height="180" viewBox="0 0 200 200">
+                {(() => {
+                  const total = expenseCategories.reduce((sum, cat) => sum + cat.value, 0);
+                  let currentAngle = 0;
+                  return expenseCategories.map((cat, i) => {
+                    const angle = (cat.value / total) * 360;
+                    const start = currentAngle;
+                    currentAngle += angle;
+                    const startRad = (start - 90) * (Math.PI / 180);
+                    const endRad = (currentAngle - 90) * (Math.PI / 180);
+                    const x1 = 100 + 80 * Math.cos(startRad);
+                    const y1 = 100 + 80 * Math.sin(startRad);
+                    const x2 = 100 + 80 * Math.cos(endRad);
+                    const y2 = 100 + 80 * Math.sin(endRad);
+                    const largeArc = angle > 180 ? 1 : 0;
+                    return (
+                      <path
+                        key={i}
+                        d={`M 100 100 L ${x1} ${y1} A 80 80 0 ${largeArc} 1 ${x2} ${y2} Z`}
+                        fill={cat.color}
+                        stroke="#fff"
+                        strokeWidth="2"
+                      />
+                    );
+                  });
+                })()}
               </svg>
-            </button>
-            <div className="flex space-x-4">
-              <div className="hidden md:block">
-                <div className="relative flex items-center text-gray-400 focus-within:text-cyan-400">
-              
-        
-                </div>
-              </div>
-           
-            
-           
             </div>
           </div>
         </div>
 
-        {/* Dashboard Content */}
-        <div className="px-6 pt-6 2xl:container">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Global Activities Card */}
-            <div className="md:col-span-2 lg:col-span-1">
-              <div className="md:col-span-2 lg:col-span-1">
-                <div className="rounded-xl border-4 bg-white overflow-hidden" style={{borderColor: '#89CE94'}}>
-                  {/* Purple Header */}
-                   <div className="h-24 bg-purple-600 border-b-4 " style={{backgroundColor: '#7D5BA6', borderColor: '#89CE94'}} ></div>
-    
-                  {/* Content Area */}
-                  <div className="p-6 space-y-4">
-                  {/* Your content goes here */}
-                  <p>Content area</p>
+        {/*GOALS*/}
+        <div
+          className="rounded-xl border-4 overflow-hidden"
+          style={{ borderColor: '#89CE94', ...cardShadow }}
+        >
+          <div style={{ backgroundColor: goalHeaderColor, color: '#333', fontSize: '26px', textAlign: 'center', padding: '10px 0', fontFamily: 'Carme, sans-serif' }}>
+            Goals
+          </div>
+          <div className="p-6 space-y-6 overflow-hidden" style={{ backgroundColor: goalContentColor, height: 'calc(100% - 60px)' }}>
+            {goals.map((goal, i) => {
+              const percentage = (goal.current / goal.target) * 100;
+              return (
+                <div key={i}>
+                  <div className="flex justify-between mb-2">
+                    <span className="font-semibold">{goal.name}</span>
+                    <span>${goal.current} / ${goal.target}</span>
                   </div>
+                  <div className="w-full bg-gray-200 rounded-full h-4">
+                    <div className="h-4 rounded-full" style={{ width: `${percentage}%`, backgroundColor: '#7D5BA6' }}></div>
                   </div>
                 </div>
-          
-            </div>
+              );
+            })}
+          </div>
+        </div>
 
-            {/* Downloads Card */}
-            <div>
-              <div className="h-full py-6 px-6 rounded-xl border border-gray-200 bg-white">
-                <h5 className="text-xl text-gray-700">Downloads</h5>
-                <div className="my-8">
-                  <h1 className="text-5xl font-bold text-gray-800">64.5%</h1>
-                  <span className="text-gray-500">Compared to last week $13,988</span>
-                </div>
-                <div className="w-full h-16 bg-gradient-to-r from-purple-400 to-cyan-400 rounded opacity-20"></div>
-                <table className="mt-6 -mb-2 w-full text-gray-600">
-                  <tbody>
-                    {downloadsData.map((item, index) => (
-                      <tr key={index}>
-                        <td className="py-2">{item.name}</td>
-                        <td className="text-gray-500">{item.value}</td>
-                        <td>
-                          <div className="w-16 h-5 ml-auto bg-gray-200 rounded"></div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Ask to Customize Card */}
-            <div>
-              <div className="lg:h-full py-8 px-6 text-gray-600 rounded-xl border border-gray-200 bg-white">
-                <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-purple-400 to-cyan-400 opacity-20"></div>
-                <div className="mt-6">
-                  <h5 className="text-xl text-gray-700 text-center">Ask to customize</h5>
-                  <div className="mt-2 flex justify-center gap-4">
-                    <h3 className="text-3xl font-bold text-gray-700">28</h3>
-                    <div className="flex items-end gap-1 text-green-500">
-                      <svg className="w-3" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6.00001 0L12 8H-3.05176e-05L6.00001 0Z" fill="currentColor" />
-                      </svg>
-                      <span>2%</span>
-                    </div>
+        {/*CHAT ASSISTANT*/}
+        <div
+          className="rounded-xl border-4 bg-white overflow-hidden flex flex-col"
+          style={{ borderColor: '#89CE94', ...cardShadow }}
+        >
+          <div style={{ backgroundColor: '#7D5BA6', color: 'white', fontSize: '26px', textAlign: 'center', padding: '10px 0', fontFamily: 'Carme, sans-serif' }}>
+            Chat Assistant
+          </div>
+          <div className="flex flex-col flex-1" style={{ height: 'calc(100% - 60px)' }}>
+            <div
+              ref={chatContainerRef}
+              className="flex-1 overflow-y-auto p-4 space-y-3"
+            >
+              {chatMessages.map((msg, i) => (
+                <div key={i} className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}>
+                  <div className="px-4 py-2 rounded-lg max-w-[80%]" style={{ backgroundColor: msg.isBot ? '#89CE94' : '#7D5BA6', color: 'white' }}>
+                    {msg.isBot ? <>🤖 {msg.text}</> : msg.text}
                   </div>
-                  <span className="block text-center text-gray-500">Compared to last week 13</span>
                 </div>
-                <table className="mt-6 -mb-2 w-full text-gray-600">
-                  <tbody>
-                    {customizeData.map((item, index) => (
-                      <tr key={index}>
-                        <td className="py-2">{item.name}</td>
-                        <td className="text-gray-500">{item.value}</td>
-                        <td>
-                          <div className="w-16 h-5 ml-auto bg-gray-200 rounded"></div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              ))}
+            </div>
+            <div className="p-4 border-t flex gap-2">
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Ask me anything..."
+                className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2"
+                style={{ borderColor: '#89CE94' }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && chatInput.trim()) {
+                    setChatMessages(prev => [...prev, { text: chatInput, isBot: false }]);
+                    setChatInput('');
+                    setTimeout(() => {
+                      setChatMessages(prev => [...prev, { text: "I'm here to help with your finances!", isBot: true }]);
+                    }, 500);
+                  }
+                }}
+              />
+              <button
+                onClick={() => {
+                  if (chatInput.trim()) {
+                    setChatMessages(prev => [...prev, { text: chatInput, isBot: false }]);
+                    setChatInput('');
+                    setTimeout(() => {
+                      setChatMessages(prev => [...prev, { text: "I'm here to help with your finances!", isBot: true }]);
+                    }, 500);
+                  }
+                }}
+                className="px-6 py-2 rounded-lg text-white"
+                style={{ backgroundColor: '#7D5BA6' }}
+              >
+                Send
+              </button>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );

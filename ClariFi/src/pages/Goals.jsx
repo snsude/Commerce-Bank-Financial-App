@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import NavBar from './NavBar';
 import {
   Home,
   Target,
@@ -45,82 +46,9 @@ const Goals = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50" style={{ backgroundColor: '#E0E0E0' }}>
       {/* Sidebar */}
-      <aside
-        className={`${
-          sidebarOpen ? "ml-0" : "ml-[-100%]"
-        } fixed z-10 top-0 pb-3 px-6 w-full flex flex-col justify-between h-screen border-r bg-white transition duration-300 md:w-4/12 lg:ml-0 lg:w-[25%] xl:w-[20%] 2xl:w-[15%]`}
-      >
-        <div>
-          <div className="-mx-6 px-6 py-4">
-            <a href="#" title="home">
-              <img
-                src="/ClariFi-Mini Logo.png"
-                className="h-13 w-13"
-                alt="ClariFi Logo"
-              />
-            </a>
-          </div>
-
-          <div className="mt-8 text-center">
-            <img
-              src="https://tailus.io/sources/blocks/stats-cards/preview/images/second_user.webp"
-              alt=""
-              className="w-10 h-10 m-auto rounded-full object-cover lg:w-28 lg:h-28"
-            />
-            <h5 className="hidden mt-4 text-xl font-semibold text-gray-600 lg:block">
-              Cynthia J. Watts
-            </h5>
-            <span className="hidden text-gray-400 lg:block">Admin</span>
-          </div>
-
-          <ul className="space-y-2 tracking-wide mt-8">
-            {navItems.map((item, index) => (
-              <li key={index}>
-                <a
-                  href={item.path}
-                  className={`px-4 py-3 flex items-center space-x-4 rounded-xl ${
-                    item.active
-                      ? "text-white bg-gradient-to-r from-sky-600 to-cyan-400"
-                      : "text-gray-600 hover:text-gray-700"
-                  }`}
-                >
-                  <svg
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
-                  </svg>
-                  <span className="font-medium">{item.name}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="px-6 -mx-6 pt-4 flex justify-between items-center border-t">
-          <button className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600 group hover:text-gray-700">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
-            <span>Logout</span>
-          </button>
-        </div>
-      </aside>
-
+      <NavBar />
       {/* Main Content */}
       <div className="ml-auto mb-6 lg:w-[75%] xl:w-[80%] 2xl:w-[85%] w-full">
         {/* Header */}
