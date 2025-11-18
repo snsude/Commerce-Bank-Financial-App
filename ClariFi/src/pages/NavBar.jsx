@@ -24,6 +24,7 @@ export default function Sidebar() {
       <ul className="flex-1 w-full">
         {/* Dashboard */}
         <li className="hover:bg-purple-700">
+        
           <Link to="/Dashboard" className="h-16 px-6 flex items-center w-full focus:text-white">
         
             <svg
@@ -110,7 +111,7 @@ export default function Sidebar() {
 
         {/* Settings */}
         <div className="h-16 flex items-center w-full border-t border-purple-400">
-          <button className="h-16 w-full px-6 flex items-center hover:bg-purple-700 focus:outline-none focus:text-white">
+          <Link to="/Settings" className="h-16 w-full px-6 flex items-center hover:bg-purple-700 focus:outline-none focus:text-white">
             <svg
               className="h-5 w-5 flex-shrink-0"
               xmlns="http://www.w3.org/2000/svg"
@@ -129,7 +130,7 @@ export default function Sidebar() {
             {isExpanded && (
               <span className="ml-4 text-sm font-medium whitespace-nowrap">Settings</span>
             )}
-          </button>
+          </Link>
         </div> 
     </aside>
   );

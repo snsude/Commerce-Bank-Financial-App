@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import NavBar from './NavBar';
-import {
-  Home,
-  Target,
-  MessageSquare,
-  FileText,
-  Settings,
-  Clock,
-} from "lucide-react";
+
 
 const Goals = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -15,19 +8,14 @@ const Goals = () => {
     { name: "New Car", total: 3200, current: 1600, color: "#643173" },
     { name: "House - Down Pmt", total: 15000, current: 1600, color: "#7d5ba6" },
     { name: "New Phone", total: 500, current: 475, color: "#86a59c" },
+    { name: "Vacation Fund", total: 2500, current: 800, color: "#89ce94" },
+    { name: "Emergency Fund", total: 10000, current: 4500, color: "#6b8e7f" },
+    { name: "Wedding Budget", total: 8000, current: 2100, color: "#a67c9f" },
   ]);
 
   const [newGoal, setNewGoal] = useState({ name: "", amount: "" });
   const [showAddGoal, setShowAddGoal] = useState(false);
 
-  // Sidebar navigation items
-  const navItems = [
-    { name: "Dashboard", active: false, path: "/dashboard" },
-    { name: "Goals", active: true, path: "/goals" },
-    { name: "ChatBot", active: false, path: "/chatbot" },
-    { name: "Documents", active: false, path: "/documents" },
-    { name: "Settings", active: false, path: "/settings" },
-  ];
 
   const addNewGoal = () => {
     if (newGoal.name && newGoal.amount) {
@@ -45,43 +33,21 @@ const Goals = () => {
     }
   };
 
+  // Calculate total stats
+  const totalSaved = goals.reduce((acc, goal) => acc + goal.current, 0);
+  const totalGoalAmount = goals.reduce((acc, goal) => acc + goal.total, 0);
+  const overallProgress = (totalSaved / totalGoalAmount) * 100;
+
   return (
     <div className="flex min-h-screen bg-gray-50" style={{ backgroundColor: '#E0E0E0' }}>
       {/* Sidebar */}
       <NavBar />
+      
       {/* Main Content */}
-      <div className="ml-auto mb-6 lg:w-[75%] xl:w-[80%] 2xl:w-[85%] w-full">
-        {/* Header */}
-        <div className="sticky z-10 top-0 h-16 border-b bg-white lg:py-2.5">
-          <div className="px-6 flex items-center justify-between space-x-4 2xl:container">
-            <h5 className="hidden text-2xl text-gray-600 font-medium lg:block">
-              Goals
-            </h5>
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="w-12 h-16 -mr-2 border-r lg:hidden"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 mx-auto"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-
+      <div className="flex-1 w-full">
         {/* Goals Content */}
-        <div className="p-8">
-          <div className="max-w-4xl mx-auto">
+        <div className="p-8 h-screen flex flex-col relative">
+          <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col overflow-hidden">
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-3xl font-bold text-[#333333]">Goals</h1>
               <button
@@ -92,13 +58,35 @@ const Goals = () => {
               </button>
             </div>
 
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 flex-shrink-0">
+              <div className="bg-white rounded-xl p-6 border-2 border-[#86a59c] shadow-sm">
+                <p className="text-sm text-gray-600 mb-2">Total Saved</p>
+                <p className="text-3xl font-bold text-[#643173]">
+                  ${totalSaved.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-white rounded-xl p-6 border-2 border-[#86a59c] shadow-sm">
+                <p className="text-sm text-gray-600 mb-2">Total Goal Amount</p>
+                <p className="text-3xl font-bold text-[#7d5ba6]">
+                  ${totalGoalAmount.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-white rounded-xl p-6 border-2 border-[#86a59c] shadow-sm">
+                <p className="text-sm text-gray-600 mb-2">Overall Progress</p>
+                <p className="text-3xl font-bold text-[#89ce94]">
+                  {overallProgress.toFixed(1)}%
+                </p>
+              </div>
+            </div>
+
             {/* Goals List */}
-            <div className="bg-white rounded-2xl p-8 border-2 border-[#86a59c] shadow-sm">
-              <h2 className="text-xl font-semibold text-[#333333] mb-6">
+            <div className="bg-white rounded-2xl border-2 border-[#86a59c] shadow-sm flex-1 flex flex-col overflow-hidden">
+              <h2 className="text-xl font-semibold text-[#333333] p-8 pb-4 flex-shrink-0">
                 Your Goals
               </h2>
 
-              <div className="space-y-6">
+              <div className="space-y-6 px-8 pb-8 overflow-y-auto flex-1">
                 {goals.map((goal, index) => {
                   const percentage = (goal.current / goal.total) * 100;
                   return (
@@ -121,13 +109,17 @@ const Goals = () => {
                           }}
                         ></div>
                       </div>
+                      <div className="flex justify-between items-center text-xs text-gray-500">
+                        <span>{percentage.toFixed(1)}% complete</span>
+                        <span>${(goal.total - goal.current).toLocaleString()} remaining</span>
+                      </div>
                     </div>
                   );
                 })}
               </div>
             </div>
 
-            {/* Add Goal Modal */}
+            
             {showAddGoal && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                 <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
@@ -181,6 +173,11 @@ const Goals = () => {
                 </div>
               </div>
             )}
+          </div>
+
+          {/* Footer Text */}
+          <div className="fixed bottom-4 right-4 text-xs text-gray-500">
+            App is owned by Team Nova in partner with Commerce Bank
           </div>
         </div>
       </div>

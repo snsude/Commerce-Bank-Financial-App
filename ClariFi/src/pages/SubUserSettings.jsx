@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import NavBar from './NavBar';
+import { Link } from 'react-router-dom';
 
-export default function SettingsPage() {
+export default function SettingsPageSubUser() {
   const [activeTab, setActiveTab] = useState('edit-profile');
+  const [isExpanded, setIsExpanded] = useState(false);
+  const businessName = 'Acme Corporation'; // Sub user cannot change this
   const [username, setUsername] = useState('Test User');
   const [email, setEmail] = useState('testuser@example.com');
   const [oldPassword, setOldPassword] = useState('');
@@ -12,8 +14,7 @@ export default function SettingsPage() {
 
   const navItems = [
     { id: 'edit-profile', label: 'Edit Profile' },
-    { id: 'change-password', label: 'Change Password' },
-    { id: 'delete-chats', label: 'Delete Chats' }
+    { id: 'change-password', label: 'Change Password' }
   ];
 
   const handleSaveProfile = () => {
@@ -56,13 +57,6 @@ export default function SettingsPage() {
     setTimeout(() => setMessage(''), 3000);
   };
 
-  const handleDeleteChats = () => {
-    if (window.confirm('Are you sure you want to delete all chats? This action cannot be undone.')) {
-      setMessage('All chats have been deleted');
-      setTimeout(() => setMessage(''), 3000);
-    }
-  };
-
   // Get user initials
   const getInitials = (name) => {
     return name
@@ -75,7 +69,87 @@ export default function SettingsPage() {
   return (
     <div className="flex min-h-screen bg-gray-50" style={{ backgroundColor: '#E0E0E0' }}>
       {/* Sidebar */}
-      <NavBar />
+      <aside 
+        className={`flex flex-col items-center text-white shadow h-screen transition-all duration-300 ${
+          isExpanded ? 'w-64' : 'w-20'
+        }`}
+        style={{backgroundColor: '#174D1F'}}
+        onMouseEnter={() => setIsExpanded(true)}
+        onMouseLeave={() => setIsExpanded(false)}
+      >
+        {/* Profile Circle */}
+        <div className="h-16 flex items-center w-full justify-center px-4">
+          <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center text-gray-700 font-semibold flex-shrink-0">
+            
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <ul className="flex-1 w-full">
+          {/* Dashboard */}
+          <li className="hover:bg-purple-700">
+            <Link to="/SubUserDash" className="h-16 px-6 flex items-center w-full focus:text-white">
+              <svg
+                className="h-5 w-5 flex-shrink-0"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              </svg>
+              {isExpanded && (
+                <span className="ml-4 text-sm font-medium whitespace-nowrap">Dashboard</span>
+              )}
+            </Link>
+          </li>
+        </ul>
+
+        {/* Logo Section */}
+        <div
+          className="h-20 flex items-center justify-center w-full transition-all duration-500 ease-in-out"
+        >
+          <img
+            src={isExpanded ? "/ClariFi-Logo.png" : "/ClariFi-Logo-Small.png"}
+            alt="Logo"
+            className={`object-contain transition-all duration-100 ${
+              isExpanded ? 'h-10 w-auto' : 'h-14 w-14'
+            }`}
+            style={{
+              filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))'
+            }}
+          />
+        </div>
+
+        {/* Settings */}
+        <div className="h-16 flex items-center w-full border-t border-purple-400">
+          <Link to="/SubUserSettings" className="h-16 w-full px-6 flex items-center hover:bg-purple-700 focus:outline-none focus:text-white">
+            <svg
+              className="h-5 w-5 flex-shrink-0"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            {isExpanded && (
+              <span className="ml-4 text-sm font-medium whitespace-nowrap">Settings</span>
+            )}
+          </Link>
+        </div> 
+      </aside>
       
       {/* Main Content */}
       <div className="flex-1 w-full">
@@ -127,6 +201,16 @@ export default function SettingsPage() {
                           <p className="text-gray-600 mb-6">Update your profile information</p>
                           
                           <div className="space-y-6">
+                            <div>
+                              <label className="text-sm font-medium text-[#333333] mb-2 block">Business Name</label>
+                              <input
+                                type="text"
+                                value={businessName}
+                                disabled
+                                className="w-full px-4 py-2 border-2 border-[#86a59c] rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
+                              />
+                              <p className="text-xs text-gray-500 mt-1">Business name cannot be changed by sub users</p>
+                            </div>
                             <div>
                               <label className="text-sm font-medium text-[#333333] mb-2 block">Username</label>
                               <input
@@ -213,29 +297,6 @@ export default function SettingsPage() {
                           </div>
                         </div>
                       )}
-
-                      {/* Delete Chats */}
-                      {activeTab === 'delete-chats' && (
-                        <div>
-                          <h2 className="text-2xl font-bold text-[#333333] mb-2">Delete Chats</h2>
-                          <p className="text-gray-600 mb-6">Manage your chat history</p>
-                          
-                          <div className="space-y-6">
-                            <div className="p-6 border-2 border-[#86a59c] rounded-lg bg-gray-50">
-                              <h3 className="font-semibold text-[#333333] mb-2">Delete All Chats</h3>
-                              <p className="text-sm text-gray-600 mb-4">
-                                This will permanently delete all your chat conversations. This action cannot be undone.
-                              </p>
-                              <button 
-                                onClick={handleDeleteChats}
-                                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                              >
-                                Delete All Chats
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -247,6 +308,9 @@ export default function SettingsPage() {
                     <div className="w-32 h-32 rounded-full bg-[#89ce94] flex items-center justify-center mb-4">
                       <span className="text-4xl font-bold text-white">{getInitials(username)}</span>
                     </div>
+                    
+                    {/* Business Name */}
+                    <p className="text-sm font-semibold text-[#7d5ba6] mb-2">{businessName}</p>
                     
                     {/* Username */}
                     <h3 className="text-xl font-bold text-[#333333] mb-2">{username}</h3>

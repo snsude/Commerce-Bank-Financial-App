@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import NavBar from './NavBar';
 
-export default function SettingsPage() {
+export default function SettingsPageBusiness() {
   const [activeTab, setActiveTab] = useState('edit-profile');
+  const [businessName, setBusinessName] = useState('Acme Corporation');
   const [username, setUsername] = useState('Test User');
   const [email, setEmail] = useState('testuser@example.com');
   const [oldPassword, setOldPassword] = useState('');
@@ -128,6 +129,15 @@ export default function SettingsPage() {
                           
                           <div className="space-y-6">
                             <div>
+                              <label className="text-sm font-medium text-[#333333] mb-2 block">Business Name</label>
+                              <input
+                                type="text"
+                                value={businessName}
+                                onChange={(e) => setBusinessName(e.target.value)}
+                                className="w-full px-4 py-2 border-2 border-[#86a59c] rounded-lg focus:outline-none focus:border-[#7d5ba6]"
+                              />
+                            </div>
+                            <div>
                               <label className="text-sm font-medium text-[#333333] mb-2 block">Username</label>
                               <input
                                 type="text"
@@ -247,6 +257,9 @@ export default function SettingsPage() {
                     <div className="w-32 h-32 rounded-full bg-[#89ce94] flex items-center justify-center mb-4">
                       <span className="text-4xl font-bold text-white">{getInitials(username)}</span>
                     </div>
+                    
+                    {/* Business Name */}
+                    <p className="text-sm font-semibold text-[#7d5ba6] mb-2">{businessName}</p>
                     
                     {/* Username */}
                     <h3 className="text-xl font-bold text-[#333333] mb-2">{username}</h3>

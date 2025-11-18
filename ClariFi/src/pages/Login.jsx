@@ -111,6 +111,9 @@ const Login = () => {
             Sign up Here
           </a>
         </div>
+        <div className="fixed bottom-4 right-4 text-xs text-gray-500">
+            App is owned by Team Nova in partner with Commerce Bank
+          </div>
       </div>
       </div>
     </div>
