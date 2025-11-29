@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
-import NavBar from './NavBar'
+import React from 'react';
+import NavBar from './NavBar';
+import PlotlyBusiness from './PlotlyBusiness';
 
 function BusinessDash() {
-  const [selectedProject, setSelectedProject] = useState('Project Alpha');
-  
-  const projects = ['Project Alpha', 'Project Beta', 'Project Gamma', 'Project Delta'];
-  
   const budget = {
     total: 100000,
     used: 67500
@@ -46,112 +43,55 @@ function BusinessDash() {
   const budgetPercentage = (budget.used / budget.total) * 100;
 
   const cardShadow = {
-    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08)',
     transition: 'transform 0.2s ease, box-shadow 0.2s ease'
   };
 
-  // Helper function to draw bar chart
-  const renderBarChart = (data, color) => {
-    const maxValue = Math.max(...data.map(d => d.amount));
-    const chartHeight = 200;
-    const padding = 40;
-    const bottomSpace = 50;
-    
-    return (
-      <svg width="100%" height={chartHeight + bottomSpace} style={{ display: 'block' }} viewBox={`0 0 400 ${chartHeight + bottomSpace}`} preserveAspectRatio="xMidYMid meet">
-        {data.map((item, i) => {
-          const barWidth = 60;
-          const totalWidth = 400 - (padding * 2);
-          const spacing = totalWidth / data.length;
-          const barHeight = (item.amount / maxValue) * chartHeight;
-          const x = padding + (i * spacing) + (spacing - barWidth) / 2;
-          const y = chartHeight - barHeight + 20;
-          
-          return (
-            <g key={i}>
-              <rect
-                x={x}
-                y={y}
-                width={barWidth}
-                height={barHeight}
-                fill={color}
-                rx={6}
-                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}
-              />
-              <text
-                x={x + barWidth / 2}
-                y={chartHeight + 40}
-                textAnchor="middle"
-                fontSize="16"
-                fontWeight="600"
-                fill="#333"
-              >
-                {item.quarter}
-              </text>
-              <text
-                x={x + barWidth / 2}
-                y={y - 8}
-                textAnchor="middle"
-                fontSize="14"
-                fontWeight="600"
-                fill="#555"
-              >
-                ${(item.amount / 1000).toFixed(0)}k
-              </text>
-            </g>
-          );
-        })}
-      </svg>
-    );
+  const headerShadow = {
+    boxShadow: '0 3px 6px rgba(0, 0, 0, 0.12)'
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', backgroundColor: '#E0E0E0' }}>
+    <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', backgroundColor: '#E8E8E8' }}>
       <NavBar />
-      
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '24px', padding: '24px' }}>
-        
-        {/* Project Selector */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <select
-            value={selectedProject}
-            onChange={(e) => setSelectedProject(e.target.value)}
-            style={{ 
-              padding: '8px 16px', 
-              borderRadius: '8px', 
-              border: '2px solid #89CE94', 
-              fontSize: '18px',
-              backgroundColor: 'white',
-              outline: 'none'
-            }}
-          >
-            {projects.map(project => (
-              <option key={project} value={project}>{project}</option>
-            ))}
-          </select>
-        </div>
 
         {/* Budget Section */}
         <div
           style={{ 
             borderRadius: '12px', 
-            border: '4px solid #89CE94', 
+            border: '3px solid #6BB577', 
             backgroundColor: 'white', 
             overflow: 'hidden',
             height: '180px',
             ...cardShadow 
           }}
         >
-          <div style={{ backgroundColor: '#7D5BA6', color: 'white', fontSize: '26px', textAlign: 'center', padding: '10px 0', fontFamily: 'Carme, sans-serif' }}>
+          <div style={{ 
+            backgroundColor: '#7D5BA6',
+            color: 'white', 
+            fontSize: '26px', 
+            textAlign: 'center', 
+            padding: '10px 0', 
+            fontFamily: 'Carme, sans-serif',
+            fontWeight: '500',
+            ...headerShadow
+          }}>
             Budget
           </div>
           <div style={{ padding: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <span style={{ fontSize: '20px', fontWeight: '600' }}>Total Budget Usage</span>
-              <span style={{ fontSize: '20px' }}>${budget.used.toLocaleString()} / ${budget.total.toLocaleString()}</span>
+              <span style={{ fontSize: '20px', fontWeight: '600', color: '#333' }}>Total Budget Usage</span>
+              <span style={{ fontSize: '20px', fontWeight: '500', color: '#555' }}>${budget.used.toLocaleString()} / ${budget.total.toLocaleString()}</span>
             </div>
-            <div style={{ width: '100%', backgroundColor: '#e5e7eb', borderRadius: '9999px', height: '32px' }}>
+            <div style={{ 
+              width: '100%', 
+              backgroundColor: '#F0F0F0', 
+              borderRadius: '9999px', 
+              height: '32px',
+              boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1)'
+            }}>
               <div 
                 style={{ 
                   height: '32px', 
@@ -161,8 +101,10 @@ function BusinessDash() {
                   justifyContent: 'center',
                   color: 'white', 
                   fontWeight: '600',
+                  fontSize: '15px',
                   width: `${budgetPercentage}%`, 
-                  backgroundColor: '#7D5BA6' 
+                  backgroundColor: '#7D5BA6',
+                  boxShadow: '0 2px 6px rgba(125, 91, 166, 0.4)'
                 }}
               >
                 {budgetPercentage.toFixed(1)}%
@@ -172,13 +114,13 @@ function BusinessDash() {
         </div>
 
         {/* Income and Expenses Section */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', height: 'calc(100vh - 330px)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', height: 'calc(100vh - 280px)' }}>
           
           {/* Income */}
           <div
             style={{ 
               borderRadius: '12px', 
-              border: '4px solid #89CE94', 
+              border: '3px solid #6BB577', 
               backgroundColor: 'white', 
               overflow: 'hidden',
               display: 'flex',
@@ -187,30 +129,39 @@ function BusinessDash() {
               ...cardShadow 
             }}
           >
-            <div style={{ backgroundColor: '#7D5BA6', color: 'white', fontSize: '26px', textAlign: 'center', padding: '10px 0', fontFamily: 'Carme, sans-serif' }}>
+            <div style={{ 
+              backgroundColor: '#7D5BA6',
+              color: 'white', 
+              fontSize: '26px', 
+              textAlign: 'center', 
+              padding: '10px 0', 
+              fontFamily: 'Carme, sans-serif',
+              fontWeight: '500',
+              ...headerShadow
+            }}>
               Income
             </div>
             <div style={{ padding: '16px' }}>
               <div style={{ marginBottom: '16px' }}>
-                {renderBarChart(incomeData, '#89CE94')}
+                <PlotlyBusiness data={incomeData} color="#5CB85C" type="income" />
               </div>
             </div>
-            <div style={{ borderTop: '1px solid #e5e7eb', flex: 1, overflowY: 'auto', padding: '0 16px 16px 16px' }}>
-              <h3 style={{ fontWeight: '600', fontSize: '18px', marginBottom: '12px', paddingTop: '16px', position: 'sticky', top: 0, backgroundColor: 'white' }}>Recent Income</h3>
+            <div style={{ borderTop: '1px solid #E5E5E5', flex: 1, overflowY: 'auto', padding: '0 16px 16px 16px' }}>
+              <h3 style={{ fontWeight: '600', fontSize: '18px', marginBottom: '12px', paddingTop: '16px', position: 'sticky', top: 0, backgroundColor: 'white', color: '#333' }}>Recent Income</h3>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead style={{ position: 'sticky', top: '48px', backgroundColor: 'white' }}>
-                  <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
-                    <th style={{ textAlign: 'left', padding: '8px', fontSize: '14px' }}>Description</th>
-                    <th style={{ textAlign: 'left', padding: '8px', fontSize: '14px' }}>Date</th>
-                    <th style={{ textAlign: 'right', padding: '8px', fontSize: '14px' }}>Amount</th>
+                  <tr style={{ borderBottom: '1px solid #E5E5E5' }}>
+                    <th style={{ textAlign: 'left', padding: '8px', fontSize: '14px', fontWeight: '600', color: '#666' }}>Description</th>
+                    <th style={{ textAlign: 'left', padding: '8px', fontSize: '14px', fontWeight: '600', color: '#666' }}>Date</th>
+                    <th style={{ textAlign: 'right', padding: '8px', fontSize: '14px', fontWeight: '600', color: '#666' }}>Amount</th>
                   </tr>
                 </thead>
                 <tbody>
                   {recentIncome.map(item => (
-                    <tr key={item.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                      <td style={{ padding: '8px', fontSize: '14px' }}>{item.description}</td>
-                      <td style={{ padding: '8px', fontSize: '14px' }}>{item.date}</td>
-                      <td style={{ padding: '8px', textAlign: 'right', fontSize: '14px', fontWeight: '600', color: '#89CE94' }}>
+                    <tr key={item.id} style={{ borderBottom: '1px solid #F5F5F5' }}>
+                      <td style={{ padding: '8px', fontSize: '14px', color: '#333' }}>{item.description}</td>
+                      <td style={{ padding: '8px', fontSize: '14px', color: '#666' }}>{item.date}</td>
+                      <td style={{ padding: '8px', textAlign: 'right', fontSize: '14px', fontWeight: '600', color: '#5CB85C' }}>
                         {item.amount}
                       </td>
                     </tr>
@@ -224,7 +175,7 @@ function BusinessDash() {
           <div
             style={{ 
               borderRadius: '12px', 
-              border: '4px solid #89CE94', 
+              border: '3px solid #6BB577', 
               backgroundColor: 'white', 
               overflow: 'hidden',
               display: 'flex',
@@ -233,30 +184,39 @@ function BusinessDash() {
               ...cardShadow 
             }}
           >
-            <div style={{ backgroundColor: '#7D5BA6', color: 'white', fontSize: '26px', textAlign: 'center', padding: '10px 0', fontFamily: 'Carme, sans-serif' }}>
+            <div style={{ 
+              backgroundColor: '#7D5BA6',
+              color: 'white', 
+              fontSize: '26px', 
+              textAlign: 'center', 
+              padding: '10px 0', 
+              fontFamily: 'Carme, sans-serif',
+              fontWeight: '500',
+              ...headerShadow
+            }}>
               Expenses
             </div>
             <div style={{ padding: '16px' }}>
               <div style={{ marginBottom: '16px' }}>
-                {renderBarChart(expenseData, '#FFA8C3')}
+                <PlotlyBusiness data={expenseData} color="#E67E9F" type="expense" />
               </div>
             </div>
-            <div style={{ borderTop: '1px solid #e5e7eb', flex: 1, overflowY: 'auto', padding: '0 16px 16px 16px' }}>
-              <h3 style={{ fontWeight: '600', fontSize: '18px', marginBottom: '12px', paddingTop: '16px', position: 'sticky', top: 0, backgroundColor: 'white' }}>Recent Expenses</h3>
+            <div style={{ borderTop: '1px solid #E5E5E5', flex: 1, overflowY: 'auto', padding: '0 16px 16px 16px' }}>
+              <h3 style={{ fontWeight: '600', fontSize: '18px', marginBottom: '12px', paddingTop: '16px', position: 'sticky', top: 0, backgroundColor: 'white', color: '#333' }}>Recent Expenses</h3>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead style={{ position: 'sticky', top: '48px', backgroundColor: 'white' }}>
-                  <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
-                    <th style={{ textAlign: 'left', padding: '8px', fontSize: '14px' }}>Description</th>
-                    <th style={{ textAlign: 'left', padding: '8px', fontSize: '14px' }}>Date</th>
-                    <th style={{ textAlign: 'right', padding: '8px', fontSize: '14px' }}>Amount</th>
+                  <tr style={{ borderBottom: '1px solid #E5E5E5' }}>
+                    <th style={{ textAlign: 'left', padding: '8px', fontSize: '14px', fontWeight: '600', color: '#666' }}>Description</th>
+                    <th style={{ textAlign: 'left', padding: '8px', fontSize: '14px', fontWeight: '600', color: '#666' }}>Date</th>
+                    <th style={{ textAlign: 'right', padding: '8px', fontSize: '14px', fontWeight: '600', color: '#666' }}>Amount</th>
                   </tr>
                 </thead>
                 <tbody>
                   {recentExpenses.map(item => (
-                    <tr key={item.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                      <td style={{ padding: '8px', fontSize: '14px' }}>{item.description}</td>
-                      <td style={{ padding: '8px', fontSize: '14px' }}>{item.date}</td>
-                      <td style={{ padding: '8px', textAlign: 'right', fontSize: '14px', fontWeight: '600', color: '#FFA8C3' }}>
+                    <tr key={item.id} style={{ borderBottom: '1px solid #F5F5F5' }}>
+                      <td style={{ padding: '8px', fontSize: '14px', color: '#333' }}>{item.description}</td>
+                      <td style={{ padding: '8px', fontSize: '14px', color: '#666' }}>{item.date}</td>
+                      <td style={{ padding: '8px', textAlign: 'right', fontSize: '14px', fontWeight: '600', color: '#E67E9F' }}>
                         {item.amount}
                       </td>
                     </tr>
@@ -265,9 +225,20 @@ function BusinessDash() {
               </table>
             </div>
           </div>
-          <div className="fixed bottom-4 right-4 text-xs text-gray-500">
-            App is owned by Team Nova in partner with Commerce Bank
-          </div>           
+          
+        </div>
+        <div style={{ 
+          position: 'fixed', 
+          bottom: '16px', 
+          right: '16px', 
+          fontSize: '11px', 
+          color: '#888',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          padding: '6px 10px',
+          borderRadius: '6px',
+          boxShadow: '0 2px 6px rgba(0, 0, 0, 0.12)'
+        }}>
+          App is owned by Team Nova in partner with Commerce Bank
         </div>
       </div>
     </div>
