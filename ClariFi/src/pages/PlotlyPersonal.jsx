@@ -14,7 +14,7 @@ const CATEGORY_COLORS = {
   'Other': '#C9CBCF'
 };
 
-export default function PlotlyPersonal({ data }) {
+export default function PlotlyPersonal({ data, hoveredIndex = null }) {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -23,10 +23,13 @@ export default function PlotlyPersonal({ data }) {
     const labels = data.map(cat => cat.name);
     const values = data.map(cat => cat.value);
     
-    // Assign colors based on category
+    
     const colors = data.map(cat => 
-      CATEGORY_COLORS[cat.name] || CATEGORY_COLORS['Other']
+      cat.color || CATEGORY_COLORS[cat.name] || CATEGORY_COLORS['Other']
     );
+
+    
+    const pull = data.map(() => 0);
 
     const plotData = [{
       type: 'pie',
@@ -37,16 +40,20 @@ export default function PlotlyPersonal({ data }) {
       },
       textinfo: 'none',
       hovertemplate: '<b>%{label}</b><br>$%{value}<br>%{percent}<extra></extra>',
-      hole: 0
+      hole: 0.3,
+      pull: pull
     }];
 
     const layout = {
       showlegend: false,
-      margin: { t: 0, b: 0, l: 0, r: 0 },
+      margin: { t: 20, b: 20, l: 20, r: 20 },
       paper_bgcolor: 'rgba(0,0,0,0)',
       plot_bgcolor: 'rgba(0,0,0,0)',
-      height: 180,
-      width: 180
+      autosize: true,
+      transition: {
+        duration: 200,
+        easing: 'cubic-in-out'
+      }
     };
 
     const config = {
@@ -56,12 +63,31 @@ export default function PlotlyPersonal({ data }) {
 
     Plotly.newPlot(chartRef.current, plotData, layout, config);
 
+    // Handle resize
+    const handleResize = () => {
+      if (chartRef.current) {
+        Plotly.Plots.resize(chartRef.current);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
     return () => {
+      window.removeEventListener('resize', handleResize);
       if (chartRef.current) {
         Plotly.purge(chartRef.current);
       }
     };
   }, [data]);
 
-  return <div ref={chartRef} />;
+ 
+  useEffect(() => {
+    if (!chartRef.current) return;
+
+    const pull = data.map((_, i) => i === hoveredIndex ? 0.1 : 0);
+
+    Plotly.restyle(chartRef.current, { pull: [pull] });
+  }, [hoveredIndex, data]);
+
+  return <div ref={chartRef} style={{ width: '100%', height: '100%' }} />;
 }

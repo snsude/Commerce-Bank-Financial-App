@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PlotlyBusiness from './PlotlyBusiness'; 
 
 function SubUserDash() {
   const [isExpanded, setIsExpanded] = useState(false);
+  const location = useLocation();
   const projectName = 'Project Alpha';
   
+  const isActive = (path) => location.pathname === path;
+
   const budget = {
     total: 100000,
     used: 67500
@@ -55,50 +58,105 @@ function SubUserDash() {
       
       {/* NAV BAR  */}
       <aside 
-        className={`flex flex-col items-center text-white shadow h-screen transition-all duration-300 ${
+        className={`flex flex-col items-center text-white h-screen transition-all duration-300 ${
           isExpanded ? 'w-64' : 'w-20'
         }`}
-        style={{backgroundColor: '#174D1F'}}
+        style={{
+          backgroundColor: '#174D1F',
+          boxShadow: '4px 0 12px rgba(0, 0, 0, 0.15)'
+        }}
         onMouseEnter={() => setIsExpanded(true)}
         onMouseLeave={() => setIsExpanded(false)}
       >
-        {/* Profile */}
-        <div className="h-16 flex items-center w-full justify-center px-4">
-          <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center text-gray-700 font-semibold flex-shrink-0"></div>
+        {/* Profile Circle */}
+        <div className="h-20 flex items-center w-full justify-center px-4 mb-2">
+          <div 
+            className="h-12 w-12 rounded-full bg-white flex items-center justify-center text-gray-700 font-bold flex-shrink-0 text-lg"
+            style={{
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+              border: '3px solid #6BB577'
+            }}
+          >
+            U
+          </div>
         </div>
 
         {/* Navigation */}
-        <ul className="flex-1 w-full">
-          <li className="hover:bg-purple-700">
-            <Link to="/SubUserDash" className="h-16 px-6 flex items-center w-full focus:text-white">
-              <svg className="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-              </svg>
-              {isExpanded && <span className="ml-4 text-sm font-medium whitespace-nowrap">Dashboard</span>}
-            </Link>
-          </li>
-        </ul>
+        <nav className="flex-1 w-full px-2">
+          <ul className="space-y-2">
+            <li>
+              <Link 
+                to="/SubUserDash" 
+                className="flex items-center px-4 py-3 rounded-lg transition-all duration-200 hover:bg-green-600 hover:bg-opacity-20"
+              >
+                <div className="transition-transform duration-200">
+                  <svg
+                    className="h-6 w-6 flex-shrink-0"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  </svg>
+                </div>
+                {isExpanded && (
+                  <span className="ml-4 text-sm font-medium whitespace-nowrap">
+                    Dashboard
+                  </span>
+                )}
+              </Link>
+            </li>
+          </ul>
+        </nav>
 
-        {/* Logo */}
-        <div className="h-20 flex items-center justify-center w-full transition-all duration-500 ease-in-out">
+        {/* Logo Section */}
+        <div className="h-24 flex items-center justify-center w-full px-4">
           <img
             src={isExpanded ? "/ClariFi-Logo.png" : "/ClariFi-Logo-Small.png"}
             alt="Logo"
-            className={`object-contain transition-all duration-100 ${
-              isExpanded ? 'h-10 w-auto' : 'h-14 w-14'
+            className={`object-contain transition-all duration-300 ${
+              isExpanded ? 'h-12 w-auto' : 'h-14 w-14'
             }`}
-            style={{ filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))' }}
+            style={{
+              filter: 'drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25))'
+            }}
           />
         </div>
 
         {/* Settings */}
-        <div className="h-16 flex items-center w-full border-t border-purple-400">
-          <Link to="/SubUserSettings" className="h-16 w-full px-6 flex items-center hover:bg-purple-700 focus:outline-none focus:text-white">
-            <svg className="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-            {isExpanded && <span className="ml-4 text-sm font-medium whitespace-nowrap">Settings</span>}
+        <div className="w-full px-2 pb-4 border-t border-white border-opacity-20 pt-2">
+          <Link 
+            to="/SubUserSettings" 
+            className="flex items-center px-4 py-3 rounded-lg transition-all duration-200 hover:bg-green-600 hover:bg-opacity-20"
+          >
+            <div className="transition-transform duration-200">
+              <svg
+                className="h-6 w-6 flex-shrink-0"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </div>
+            {isExpanded && (
+              <span className="ml-4 text-sm font-medium whitespace-nowrap">
+                Settings
+              </span>
+            )}
           </Link>
         </div>
       </aside>

@@ -250,7 +250,7 @@ export default function SettingsPageBusiness() {
                   </div>
                 </div>
 
-                {/* Right Side - User Profile Display Only */}
+                {/* Right Side */}
                 <div className="w-80 p-8 flex flex-col items-center justify-start flex-shrink-0">
                   <div className="flex flex-col items-center">
                     {/* Profile Circle with Initials */}
