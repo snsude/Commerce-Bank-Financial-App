@@ -8,68 +8,7 @@ const ChatBot = () => {
   const [activeChat, setActiveChat] = useState(0);
 
   const chatHistory = [
-    { 
-      id: 0, 
-      title: 'Current Chat', 
-      date: '2024-11-09',
-      messages: [
-        { type: 'bot', text: 'What Can I Assist You With?' }
-      ]
-    },
-    { 
-      id: 1, 
-      title: 'Budget Planning Help', 
-      date: '2024-11-08',
-      messages: [
-        { type: 'bot', text: 'What Can I Assist You With?' },
-        { type: 'user', text: 'I need help creating a monthly budget' },
-        { type: 'bot', text: 'I can help you with that! Let\'s start by listing your monthly income and expenses.' }
-      ]
-    },
-    { 
-      id: 2, 
-      title: 'Savings Goal Setup', 
-      date: '2024-11-07',
-      messages: [
-        { type: 'bot', text: 'What Can I Assist You With?' },
-        { type: 'user', text: 'How do I set up a savings goal?' },
-        { type: 'bot', text: 'Great question! You can set up savings goals in the Goals section. What are you saving for?' },
-        { type: 'user', text: 'I want to save for a vacation' },
-        { type: 'bot', text: 'Perfect! I recommend setting a target amount and timeline. How much do you want to save?' }
-      ]
-    },
-    { 
-      id: 3, 
-      title: 'Expense Categories', 
-      date: '2024-11-06',
-      messages: [
-        { type: 'bot', text: 'What Can I Assist You With?' },
-        { type: 'user', text: 'Can you explain the expense categories?' },
-        { type: 'bot', text: 'Of course! We categorize expenses into Food, Transport, Entertainment, Utilities, and Other to help you track spending patterns.' }
-      ]
-    },
-    { 
-      id: 4, 
-      title: 'Investment Advice', 
-      date: '2024-11-05',
-      messages: [
-        { type: 'bot', text: 'What Can I Assist You With?' },
-        { type: 'user', text: 'Should I start investing?' },
-        { type: 'bot', text: 'Investing can be a great way to grow your wealth! It depends on your financial situation. Do you have an emergency fund set up?' },
-        { type: 'user', text: 'Yes, I have 3 months saved' },
-        { type: 'bot', text: 'That\'s excellent! With an emergency fund in place, you might consider starting with low-risk investments. Would you like to learn more?' }
-      ]
-    },
-    { 
-      id: 5, 
-      title: 'Monthly Report', 
-      date: '2024-11-04',
-      messages: [
-        { type: 'bot', text: 'What Can I Assist You With?' },
-        { type: 'user', text: 'Can I see my monthly spending report?' },
-        { type: 'bot', text: 'Your monthly report shows you spent $1,200 total. Your biggest category was Food at $450, followed by Utilities at $300.' }
-      ]
-    }
+    
   ];
 
   const [chats, setChats] = useState(chatHistory);

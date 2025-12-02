@@ -3,9 +3,9 @@ import NavBar from './NavBar';
 
 export default function SettingsPageBusiness() {
   const [activeTab, setActiveTab] = useState('edit-profile');
-  const [businessName, setBusinessName] = useState('Acme Corporation');
-  const [username, setUsername] = useState('Test User');
-  const [email, setEmail] = useState('testuser@example.com');
+  const [businessName, setBusinessName] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

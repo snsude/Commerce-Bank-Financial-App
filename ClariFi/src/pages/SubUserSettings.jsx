@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 export default function SettingsPageSubUser() {
   const [activeTab, setActiveTab] = useState('edit-profile');
   const [isExpanded, setIsExpanded] = useState(false);
-  const businessName = 'Acme Corporation'; // Sub user cannot change this
-  const [username, setUsername] = useState('Test User');
-  const [email, setEmail] = useState('testuser@example.com');
+  const businessName = ''; // Sub user cannot change this
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

@@ -3,8 +3,8 @@ import NavBar from './NavBar';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('edit-profile');
-  const [username, setUsername] = useState('Test User');
-  const [email, setEmail] = useState('testuser@example.com');
+  const [username, setUsername] = useState();
+  const [email, setEmail] = useState();
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

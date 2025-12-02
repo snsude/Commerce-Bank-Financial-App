@@ -5,29 +5,7 @@ import PlotlyPersonal from './PlotlyPersonal';
 export default function Dashboard() {
   const [hoveredCategoryIndex, setHoveredCategoryIndex] = useState(null);
 
-  const recentPurchases = [
-    { id: 1, item: 'Laptop', date: '2024-11-01', amount: '$1,299.99' },
-    { id: 2, item: 'Wireless Mouse', date: '2024-11-02', amount: '$29.99' },
-    { id: 3, item: 'USB-C Cable', date: '2024-11-03', amount: '$15.99' },
-    { id: 4, item: 'Headphones', date: '2024-10-28', amount: '$89.99' },
-    { id: 5, item: 'Desk Lamp', date: '2024-10-25', amount: '$45.50' },
-    { id: 6, item: 'Coffee Subscription', date: '2024-10-22', amount: '$24.99' },
-  ];
-
-  const expenseCategories = [
-    { name: 'Food', value: 450, color: '#8B6FB0' },
-    { name: 'Transport', value: 200, color: '#6BB577' },
-    { name: 'Entertainment', value: 150, color: '#F5C563' },
-    { name: 'Utilities', value: 300, color: '#E67E9F' },
-    { name: 'Other', value: 100, color: '#5DADE2' }
-  ];
-
-  const goals = [
-    { name: 'Emergency Fund', current: 3500, target: 5000, color: '#7D5BA6' },
-    { name: 'Vacation', current: 800, target: 2000, color: '#5CB85C' },
-    { name: 'New Laptop', current: 650, target: 1500, color: '#E67E9F' }
-  ];
-
+  
   const cardShadow = {
     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08)',
     transition: 'transform 0.2s ease, box-shadow 0.2s ease'

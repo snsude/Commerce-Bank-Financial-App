@@ -3,14 +3,7 @@ import NavBar from './NavBar';
 
 const Goals = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [goals, setGoals] = useState([
-    { name: "New Car", total: 3200, current: 1600, color: "#643173" },
-    { name: "House - Down Pmt", total: 15000, current: 1600, color: "#7d5ba6" },
-    { name: "New Phone", total: 500, current: 475, color: "#86a59c" },
-    { name: "Vacation Fund", total: 2500, current: 800, color: "#89ce94" },
-    { name: "Emergency Fund", total: 10000, current: 4500, color: "#6b8e7f" },
-    { name: "Wedding Budget", total: 8000, current: 2100, color: "#a67c9f" },
-  ]);
+ 
 
   const [newGoal, setNewGoal] = useState({ name: "", amount: "" });
   const [showAddGoal, setShowAddGoal] = useState(false);
