@@ -1,15 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException 
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from datetime import date
 
-from backend.app.database import get_db
-from backend.app.core.dependencies import get_current_user
-from backend.app.models.goals import Goal
-from backend.app.schemas.goals import GoalCreate, GoalOut
-from backend.app.models.user import User
+from ..database import get_db
+from ..core.dependencies import get_current_user
+from ..models.goals import Goal
+from ..schemas.goals import GoalCreate, GoalOut
+from ..models.user import User
 
 router = APIRouter(prefix="/goals", tags=["Goals"])
-
 
 
 @router.post("/", response_model=GoalOut)
@@ -34,7 +33,6 @@ def create_goal(
     return goal
 
 
-
 @router.get("/", response_model=list[GoalOut])
 def list_goals(
     db: Session = Depends(get_db),
@@ -45,7 +43,6 @@ def list_goals(
         .filter(Goal.user_id == current_user.id)
         .all()
     )
-
 
 
 @router.patch("/{goal_id}", response_model=GoalOut)
@@ -77,7 +74,6 @@ def update_progress(
     db.commit()
     db.refresh(goal)
     return goal
-
 
 
 @router.delete("/{goal_id}")

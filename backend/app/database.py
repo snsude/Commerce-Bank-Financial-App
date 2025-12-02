@@ -1,3 +1,5 @@
+# backend/app/database.py
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -23,7 +25,14 @@ def get_db():
         db.close()
 
 
-from backend.app import models  # loads models before create_all()
-
 def init_db():
+    """
+    Initialize database - creates all tables
+    Import models here to avoid circular imports
+    """
+    # Import all models so they're registered with Base
+    from .models import user, role, auth_credentials, profiles
+    from .models import budget, budget_entries, categories
+    from .models import transactions, goals, llm_logs
+    
     Base.metadata.create_all(bind=engine)

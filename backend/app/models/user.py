@@ -1,6 +1,10 @@
+# backend/app/models/user.py
+# Uses admin_id to match your existing database
+
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from ..database import Base
+
 
 class User(Base):
     __tablename__ = "users"
@@ -12,8 +16,7 @@ class User(Base):
     role_id = Column(Integer, ForeignKey("roles.id"), nullable=False)
     role = relationship("Role", back_populates="users")
 
-    # Admin to Sub-user linking
-    # A user can optionally belong to an admin (for organizations)
+    # Admin relationship - uses admin_id (integer), NOT admin_email
     admin_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     admin = relationship("User", remote_side=[id])
 

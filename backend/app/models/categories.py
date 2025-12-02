@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
-from backend.app.database import Base
+from ..database import Base  # FIXED: relative import
 
 
 class Category(Base):
@@ -10,9 +10,6 @@ class Category(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     kind = Column(String, nullable=False)  # "income" or "expense"
-
-    # Self-referencing parent category (for subcategories)
     parent_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
 
-    # Relationships
     parent = relationship("Category", remote_side=[id], backref="children")

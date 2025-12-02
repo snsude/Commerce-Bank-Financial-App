@@ -1,14 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.core.dependencies import get_current_user
-from backend.app.models.profiles import Profile
-from backend.app.schemas.profiles import ProfileCreate, ProfileUpdate, ProfileOut
-from backend.app.models.user import User
+from ..database import get_db
+from ..core.dependencies import get_current_user
+from ..models.profiles import Profile
+from ..schemas.profiles import ProfileCreate, ProfileUpdate, ProfileOut
+from ..models.user import User
 
 router = APIRouter(prefix="/profiles", tags=["Profiles"])
-
 
 
 @router.post("/", response_model=ProfileOut)
@@ -34,7 +33,6 @@ def create_or_update_profile(
     return profile
 
 
-
 @router.get("/me", response_model=ProfileOut)
 def get_my_profile(
     db: Session = Depends(get_db),
@@ -44,7 +42,6 @@ def get_my_profile(
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
     return profile
-
 
 
 @router.delete("/me")

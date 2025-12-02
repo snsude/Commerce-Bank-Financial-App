@@ -1,14 +1,13 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.core.dependencies import get_current_user
-from backend.app.models.llm_logs import LLMLog
-from backend.app.schemas.llm_logs import LLMLogCreate, LLMLogOut
-from backend.app.models.user import User
+from ..database import get_db
+from ..core.dependencies import get_current_user
+from ..models.llm_logs import LLMLog
+from ..schemas.llm_logs import LLMLogCreate, LLMLogOut
+from ..models.user import User
 
 router = APIRouter(prefix="/llm-logs", tags=["LLM Logs"])
-
 
 
 @router.post("/", response_model=LLMLogOut)
@@ -27,7 +26,6 @@ def create_log(
     db.commit()
     db.refresh(log)
     return log
-
 
 
 @router.get("/", response_model=list[LLMLogOut])

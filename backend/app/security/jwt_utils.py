@@ -1,6 +1,6 @@
 # JWT encode/decode functions
 # Create access token, verify token
-import jwt
+from jose import jwt, JWTError
 import os
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
