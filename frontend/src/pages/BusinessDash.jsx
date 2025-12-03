@@ -3,42 +3,13 @@ import NavBar from './NavBar';
 import PlotlyBusiness from './PlotlyBusiness';
 
 function BusinessDash() {
-  const budget = {
-    total: 100000,
-    used: 67500
-  };
 
-  const incomeData = [
-    { quarter: 'Q1', amount: 45000 },
-    { quarter: 'Q2', amount: 52000 },
-    { quarter: 'Q3', amount: 48000 },
-    { quarter: 'Q4', amount: 61000 }
-  ];
-
-  const expenseData = [
-    { quarter: 'Q1', amount: 32000 },
-    { quarter: 'Q2', amount: 38000 },
-    { quarter: 'Q3', amount: 35000 },
-    { quarter: 'Q4', amount: 42000 }
-  ];
-
-  const recentIncome = [
-    { id: 1, description: 'Client Payment - Acme Corp', date: '2024-11-10', amount: '$15,000' },
-    { id: 2, description: 'Service Fee - Tech Industries', date: '2024-11-08', amount: '$8,500' },
-    { id: 3, description: 'Consulting Revenue', date: '2024-11-05', amount: '$12,000' },
-    { id: 4, description: 'Product Sales', date: '2024-11-01', amount: '$6,750' },
-    { id: 5, description: 'License Renewal', date: '2024-10-28', amount: '$9,200' },
-    { id: 6, description: 'Partnership Income', date: '2024-10-25', amount: '$11,500' }
-  ];
-
-  const recentExpenses = [
-    { id: 1, description: 'Office Rent', date: '2024-11-12', amount: '$3,200' },
-    { id: 2, description: 'Employee Salaries', date: '2024-11-10', amount: '$25,000' },
-    { id: 3, description: 'Software Licenses', date: '2024-11-08', amount: '$1,450' },
-    { id: 4, description: 'Marketing Campaign', date: '2024-11-05', amount: '$4,800' },
-    { id: 5, description: 'Equipment Purchase', date: '2024-11-01', amount: '$7,600' },
-    { id: 6, description: 'Travel Expenses', date: '2024-10-28', amount: '$2,300' }
-  ];
+  // empty arrays for data
+  const budget = { used: 0, total: 1 };
+  const incomeData = [];
+  const expenseData = [];
+  const recentIncome = [];
+  const recentExpenses = [];
 
   const budgetPercentage = (budget.used / budget.total) * 100;
 
@@ -227,6 +198,7 @@ function BusinessDash() {
           </div>
           
         </div>
+
         <div style={{ 
           position: 'fixed', 
           bottom: '16px', 
@@ -240,6 +212,7 @@ function BusinessDash() {
         }}>
           App is owned by Team Nova in partner with Commerce Bank
         </div>
+
       </div>
     </div>
   );

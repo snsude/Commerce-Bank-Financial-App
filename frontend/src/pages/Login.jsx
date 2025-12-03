@@ -24,12 +24,19 @@ const Login = () => {
         password: password,
       });
 
-      // Store token
+      // Store token and user info
       localStorage.setItem("access_token", response.data.access_token);
       localStorage.setItem("user_id", response.data.user_id);
+      localStorage.setItem("user_type", response.data.user_type); // assuming this exists
 
       console.log("Login successful:", response.data);
-      navigate("/Dashboard");
+
+      // Navigate based on user type
+      if (response.data.user_type === "business") {
+        navigate("/BusinessDash");
+      } else {
+        navigate("/Dashboard");
+      }
     } catch (error) {
       console.error("Login failed:", error);
       setError(
@@ -105,7 +112,6 @@ const Login = () => {
                 autoComplete="off"
               />
             </div>
-
 
             <div className="text-white text-sm">
               <a href="#" className="hover:underline">
