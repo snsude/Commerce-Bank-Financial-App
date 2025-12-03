@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from ..database import get_db
-from ..core.dependencies import get_current_user
-from ..models.transactions import Transaction
-from ..schemas.transactions import TransactionIn, TransactionOut
-from ..models.user import User
+from database import get_db
+from core.dependencies import get_current_user
+from models.transactions import Transaction
+from schemas.transactions import TransactionIn, TransactionOut
+from models.user import User
 
 router = APIRouter(prefix="/transactions", tags=["Transactions"])
 
