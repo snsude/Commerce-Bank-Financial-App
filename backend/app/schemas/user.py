@@ -1,7 +1,8 @@
 # backend/app/schemas/user.py
-# COMPLETE FILE - Replace entire user.py schema
+# COMPLETE FILE - Updated to match database schema
 
 from pydantic import BaseModel, EmailStr
+from datetime import datetime
 from typing import Optional
 from .shared import ORMBase
 
@@ -16,10 +17,8 @@ class UserLogin(BaseModel):
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
-    display_name: Optional[str] = None
-    age: Optional[int] = None
-    gender: Optional[str] = None
-    occupation: Optional[str] = None
+    role_id: Optional[int] = None
+    business_id: Optional[int] = None
     admin_email: Optional[EmailStr] = None  # For sub_users joining business
 
     model_config = {
@@ -29,9 +28,10 @@ class UserCreate(BaseModel):
 
 # User update schema
 class UserUpdate(BaseModel):
-    email: EmailStr | None = None
-    role_id: int | None = None
-    admin_id: int | None = None
+    email: Optional[EmailStr] = None
+    role_id: Optional[int] = None
+    business_id: Optional[int] = None
+    admin_email: Optional[EmailStr] = None
 
     model_config = {
         "from_attributes": False
@@ -42,8 +42,10 @@ class UserUpdate(BaseModel):
 class UserOut(ORMBase):
     id: int
     email: EmailStr
-    role_id: int | None = None
-    admin_id: int | None = None
+    role_id: Optional[int] = None
+    business_id: Optional[int] = None
+    admin_email: Optional[EmailStr] = None
+    created_at: datetime
 
     model_config = {
         "from_attributes": True

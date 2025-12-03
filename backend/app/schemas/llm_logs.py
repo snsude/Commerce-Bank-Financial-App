@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
+from .shared import ORMBase
 
 
 class LLMLogBase(BaseModel):
@@ -10,13 +10,13 @@ class LLMLogBase(BaseModel):
 
 
 class LLMLogCreate(LLMLogBase):
-    pass
+    user_id: int  # Added to match database
 
 
-class LLMLogOut(LLMLogBase):
+class LLMLogOut(ORMBase):  # Changed to use ORMBase
     id: int
     user_id: int
-    timestamp: datetime
-
-    class Config:
-        from_attributes = True
+    session_id: str
+    prompt: str
+    response: str
+    timestamp: datetime  # Already correct

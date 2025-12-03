@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+from datetime import datetime
 
 
 class ProfileBase(BaseModel):
@@ -7,11 +8,12 @@ class ProfileBase(BaseModel):
     age: Optional[int] = None
     gender: Optional[str] = None
     occupation: Optional[str] = None
-    role_id: Optional[int] = None
+    is_business: Optional[bool] = False
+    business_name: Optional[str] = None
 
 
 class ProfileCreate(ProfileBase):
-    pass
+    user_id: int
 
 
 class ProfileUpdate(ProfileBase):
@@ -20,7 +22,8 @@ class ProfileUpdate(ProfileBase):
 
 class ProfileOut(ProfileBase):
     id: int
-    user_email: str
+    user_id: int
+    created_at: datetime
 
     class Config:
         from_attributes = True
