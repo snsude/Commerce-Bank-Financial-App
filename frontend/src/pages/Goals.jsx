@@ -3,19 +3,14 @@ import NavBar from './NavBar';
 
 const Goals = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [goals, setGoals] = useState([
-    { name: "New Car", total: 3200, current: 1600, color: "#643173" },
-    { name: "House - Down Pmt", total: 15000, current: 1600, color: "#7d5ba6" },
-    { name: "New Phone", total: 500, current: 475, color: "#86a59c" },
-    { name: "Vacation Fund", total: 2500, current: 800, color: "#89ce94" },
-    { name: "Emergency Fund", total: 10000, current: 4500, color: "#6b8e7f" },
-    { name: "Wedding Budget", total: 8000, current: 2100, color: "#a67c9f" },
-  ]);
+
+  // Backend-ready: empty default array
+  const [goals, setGoals] = useState([]);
 
   const [newGoal, setNewGoal] = useState({ name: "", amount: "" });
   const [showAddGoal, setShowAddGoal] = useState(false);
 
-  
+  // EDIT GOAL – store as strings so user can delete
   const [editGoalIndex, setEditGoalIndex] = useState(null);
   const [editData, setEditData] = useState({ name: "", total: "", current: "" });
 
@@ -37,7 +32,7 @@ const Goals = () => {
 
   const totalSaved = goals.reduce((acc, goal) => acc + goal.current, 0);
   const totalGoalAmount = goals.reduce((acc, goal) => acc + goal.total, 0);
-  const overallProgress = (totalSaved / totalGoalAmount) * 100;
+  const overallProgress = totalGoalAmount > 0 ? (totalSaved / totalGoalAmount) * 100 : 0;
 
   return (
     <div className="flex min-h-screen bg-gray-50" style={{ backgroundColor: '#E0E0E0' }}>
@@ -100,14 +95,14 @@ const Goals = () => {
                             ${goal.current.toLocaleString()} out of ${goal.total.toLocaleString()}
                           </span>
 
-                          {/* Edit Button */}
+                          {/* EDIT BUTTON */}
                           <button
                             onClick={() => {
                               setEditGoalIndex(index);
                               setEditData({
                                 name: goal.name,
-                                total: goal.total,
-                                current: goal.current,
+                                total: goal.total.toString(),
+                                current: goal.current.toString(),
                               });
                             }}
                             className="px-3 py-1 bg-[#7d5ba6] text-white rounded-md hover:bg-[#6d4f96]"
@@ -137,10 +132,13 @@ const Goals = () => {
               </div>
             </div>
 
-            {/* ADD GOAL */}
+            {/* ADD GOAL MODAL */}
             {showAddGoal && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+              <div className="fixed inset-0 flex items-center justify-center z-50">
+                {/* Blur overlay */}
+                <div className="absolute inset-0 backdrop-blur-sm bg-white/20"></div>
+
+                <div className="relative bg-white rounded-2xl p-8 max-w-md w-full mx-4 z-10 border-2 border-[#7d5ba6]">
                   <h2 className="text-2xl font-bold text-[#333333] mb-6">Add New Goal</h2>
                   <div className="space-y-4">
                     <div>
@@ -193,10 +191,13 @@ const Goals = () => {
               </div>
             )}
 
-            {/* EDIT GOAL */}
+            {/* EDIT GOAL MODAL */}
             {editGoalIndex !== null && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+              <div className="fixed inset-0 flex items-center justify-center z-50">
+                {/* Blur overlay */}
+                <div className="absolute inset-0 backdrop-blur-sm bg-white/20"></div>
+
+                <div className="relative bg-white rounded-2xl p-8 max-w-md w-full mx-4 z-10 border-2 border-[#7d5ba6]">
                   <h2 className="text-2xl font-bold text-[#333333] mb-6">Edit Goal</h2>
 
                   <div className="space-y-4">
@@ -218,7 +219,7 @@ const Goals = () => {
                         type="number"
                         value={editData.total}
                         onChange={(e) =>
-                          setEditData({ ...editData, total: Number(e.target.value) })
+                          setEditData({ ...editData, total: e.target.value })
                         }
                         className="w-full px-4 py-2 border-2 border-[#86a59c] rounded-lg"
                       />
@@ -229,9 +230,13 @@ const Goals = () => {
                       <input
                         type="number"
                         value={editData.current}
-                        onChange={(e) =>
-                          setEditData({ ...editData, current: Number(e.target.value) })
-                        }
+                        onChange={(e) => {
+                          let val = Number(e.target.value);
+                          // Prevent exceeding total
+                          if (val > Number(editData.total)) val = Number(editData.total);
+                          if (val < 0) val = 0;
+                          setEditData({ ...editData, current: val.toString() });
+                        }}
                         className="w-full px-4 py-2 border-2 border-[#86a59c] rounded-lg"
                       />
                     </div>
@@ -250,8 +255,8 @@ const Goals = () => {
                           updated[editGoalIndex] = {
                             ...updated[editGoalIndex],
                             name: editData.name,
-                            total: editData.total,
-                            current: editData.current,
+                            total: Number(editData.total),
+                            current: Number(editData.current),
                           };
                           setGoals(updated);
                           setEditGoalIndex(null);

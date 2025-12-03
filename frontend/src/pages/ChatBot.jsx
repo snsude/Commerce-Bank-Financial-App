@@ -1,110 +1,86 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import NavBar from './NavBar';
 
 const ChatBot = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [inputText, setInputText] = useState('');
   const [activeChat, setActiveChat] = useState(0);
+  const [inputText, setInputText] = useState('');
 
+  // Initial empty chat
   const chatHistory = [
-    { 
-      id: 0, 
-      title: 'Current Chat', 
-      date: '2024-11-09',
-      messages: [
-        { type: 'bot', text: 'What Can I Assist You With?' }
-      ]
-    },
-    { 
-      id: 1, 
-      title: 'Budget Planning Help', 
-      date: '2024-11-08',
-      messages: [
-        { type: 'bot', text: 'What Can I Assist You With?' },
-        { type: 'user', text: 'I need help creating a monthly budget' },
-        { type: 'bot', text: 'I can help you with that! Let\'s start by listing your monthly income and expenses.' }
-      ]
-    },
-    { 
-      id: 2, 
-      title: 'Savings Goal Setup', 
-      date: '2024-11-07',
-      messages: [
-        { type: 'bot', text: 'What Can I Assist You With?' },
-        { type: 'user', text: 'How do I set up a savings goal?' },
-        { type: 'bot', text: 'Great question! You can set up savings goals in the Goals section. What are you saving for?' },
-        { type: 'user', text: 'I want to save for a vacation' },
-        { type: 'bot', text: 'Perfect! I recommend setting a target amount and timeline. How much do you want to save?' }
-      ]
-    },
-    { 
-      id: 3, 
-      title: 'Expense Categories', 
-      date: '2024-11-06',
-      messages: [
-        { type: 'bot', text: 'What Can I Assist You With?' },
-        { type: 'user', text: 'Can you explain the expense categories?' },
-        { type: 'bot', text: 'Of course! We categorize expenses into Food, Transport, Entertainment, Utilities, and Other to help you track spending patterns.' }
-      ]
-    },
-    { 
-      id: 4, 
-      title: 'Investment Advice', 
-      date: '2024-11-05',
-      messages: [
-        { type: 'bot', text: 'What Can I Assist You With?' },
-        { type: 'user', text: 'Should I start investing?' },
-        { type: 'bot', text: 'Investing can be a great way to grow your wealth! It depends on your financial situation. Do you have an emergency fund set up?' },
-        { type: 'user', text: 'Yes, I have 3 months saved' },
-        { type: 'bot', text: 'That\'s excellent! With an emergency fund in place, you might consider starting with low-risk investments. Would you like to learn more?' }
-      ]
-    },
-    { 
-      id: 5, 
-      title: 'Monthly Report', 
-      date: '2024-11-04',
-      messages: [
-        { type: 'bot', text: 'What Can I Assist You With?' },
-        { type: 'user', text: 'Can I see my monthly spending report?' },
-        { type: 'bot', text: 'Your monthly report shows you spent $1,200 total. Your biggest category was Food at $450, followed by Utilities at $300.' }
-      ]
+    {
+      id: 0,
+      title: "New Chat",
+      date: new Date().toLocaleDateString(),
+      messages: []
     }
   ];
 
   const [chats, setChats] = useState(chatHistory);
 
-  const handleSend = () => {
-    if (inputText.trim()) {
-      const updatedChats = [...chats];
-      updatedChats[activeChat].messages.push({ type: 'user', text: inputText });
-      setChats(updatedChats);
-      setInputText('');
-      
-      setTimeout(() => {
-        const newChats = [...updatedChats];
-        newChats[activeChat].messages.push({ 
-          type: 'bot', 
-          text: 'I can help you with budgeting, savings goals, and financial planning!' 
-        });
-        setChats(newChats);
-      }, 1000);
+  const chatEndRef = useRef(null);
+
+  // Auto-scroll to bottom on new messages
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
+  }, [chats, activeChat]);
+
+  const handleSend = () => {
+    if (!inputText.trim()) return;
+
+    const updatedChats = [...chats];
+    updatedChats[activeChat].messages.push({ type: 'user', text: inputText });
+    setChats(updatedChats);
+    setInputText('');
+
+    setTimeout(() => {
+      const newChats = [...updatedChats];
+      newChats[activeChat].messages.push({
+        type: 'bot',
+        text: 'I can help you with budgeting, savings goals, and financial planning!'
+      });
+      setChats(newChats);
+    }, 1000);
   };
 
   const handleChatSelect = (chatId) => {
     setActiveChat(chatId);
   };
 
+  // New Chat button handler
+  const handleNewChat = () => {
+    const newChat = {
+      id: chats.length, // unique id
+      title: `New Chat ${chats.length + 1}`,
+      date: new Date().toLocaleDateString(),
+      messages: []
+    };
+    setChats([...chats, newChat]);
+    setActiveChat(newChat.id);
+  };
+
   return (
-    <div className="flex min-h-screen" style={{ backgroundColor: '#E0E0E0' }}>
+    <div className="flex h-screen w-screen overflow-hidden" style={{ backgroundColor: '#E0E0E0' }}>
       <NavBar />
-      
+
       {/* Chat History Sidebar */}
-      <div className="w-64 bg-gray-200 border-r-4" style={{ borderColor: '#89CE94' }}>
-        <div className="p-4">
+      <div className="w-64 bg-gray-200 border-r-4 flex-shrink-0" style={{ borderColor: '#89CE94' }}>
+        <div className="p-4 flex flex-col h-full">
           <h3 className="text-lg font-semibold mb-4" style={{ color: '#7D5BA6' }}>Chat History</h3>
-          <div className="space-y-2">
+
+          {/* New Chat Button */}
+          <div className="mb-4">
+            <button
+              onClick={handleNewChat}
+              className="w-full py-2 px-4 bg-[#89ce94] text-white font-semibold rounded-lg hover:bg-[#7dc987] transition-colors"
+            >
+              + New Chat
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto space-y-2">
             {chats.map((chat) => (
               <div 
                 key={chat.id} 
@@ -121,14 +97,14 @@ const ChatBot = () => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Chatbot Title */}
-        <div className="px-8 py-4">
-          <h5 className="text-2xl text-gray-600 font-medium">Chatbot</h5>
+      <div className="flex-1 flex flex-col h-full">
+        {/* Chatbot Header */}
+        <div className="px-8 py-4 flex-shrink-0">
+          <h5 className="text-2xl text-gray-600 font-medium">ClariFi Assistant</h5>
         </div>
 
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto px-8 py-6">
+        <div className="flex-1 px-8 py-6 overflow-y-auto">
           <div className="max-w-3xl mx-auto space-y-6">
             {chats[activeChat].messages.map((message, index) => (
               <div key={index} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -137,7 +113,7 @@ const ChatBot = () => {
                     <div className="w-16 h-16 bg-[#7d5ba6] rounded-full flex items-center justify-center">
                       <div className="text-white text-3xl">🤖</div>
                     </div>
-                    <span className="text-xs text-gray-500 mt-1">Clarifi Assistant</span>
+                    <span className="text-xs text-gray-500 mt-1">ClariFi Assistant</span>
                   </div>
                 )}
                 <div className={`max-w-md p-4 rounded-2xl ${
@@ -151,11 +127,12 @@ const ChatBot = () => {
                 </div>
               </div>
             ))}
+            <div ref={chatEndRef} />
           </div>
         </div>
 
         {/* Input Area */}
-        <div className="px-8 py-6">
+        <div className="px-8 py-6 flex-shrink-0">
           <div className="max-w-3xl mx-auto flex items-center space-x-3">
             <input
               type="text"
@@ -175,6 +152,10 @@ const ChatBot = () => {
           <p className="text-xs text-gray-400 text-center mt-3">
             This service is for general information only and not financial advice
           </p>
+        </div>
+
+        <div className="fixed bottom-4 right-4 text-xs text-gray-500">
+          App is owned by Team Nova
         </div>
       </div>
     </div>
