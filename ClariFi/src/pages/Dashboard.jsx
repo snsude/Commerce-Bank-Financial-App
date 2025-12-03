@@ -5,7 +5,14 @@ import PlotlyPersonal from './PlotlyPersonal';
 export default function Dashboard() {
   const [hoveredCategoryIndex, setHoveredCategoryIndex] = useState(null);
 
+  // EMPTY ARRAYS 
+  const [recentPurchases, setRecentPurchases] = useState([]);
+  const [expenseCategories, setExpenseCategories] = useState([]);
+  const [goals, setGoals] = useState([]);
+
   
+  
+
   const cardShadow = {
     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08)',
     transition: 'transform 0.2s ease, box-shadow 0.2s ease'
@@ -127,7 +134,7 @@ export default function Dashboard() {
 
           </div>
 
-          {/* Expense Categories with Pie Chart */}
+          {/* Expense Categories */}
           <div className="flex-1">
             <div
               className="h-full rounded-xl border-4 bg-white overflow-hidden"
@@ -147,7 +154,8 @@ export default function Dashboard() {
               </div>
 
               <div className="flex flex-col h-full" style={{ height: 'calc(100% - 60px)' }}>
-                {/* Top: Pie chart*/}
+                
+                {/* Pie chart */}
                 <div style={{ 
                   background: 'linear-gradient(180deg, #FAFAFA 0%, #F5F5F5 100%)',
                   height: '60%',
@@ -161,7 +169,7 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* Bottom: Category list */}
+                {/* Categories */}
                 <div className="p-6 bg-white" style={{ height: '40%', overflow: 'auto' }}>
                   <h3 className="text-lg font-semibold text-gray-700 mb-3 text-center">Monthly Breakdown</h3>
                   <div className="grid grid-cols-2 gap-3">
@@ -199,6 +207,7 @@ export default function Dashboard() {
                     </span>
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
@@ -219,6 +228,7 @@ export default function Dashboard() {
       }}>
         App is owned by Team Nova in partner with Commerce Bank
       </div>
+
     </div>
   );
 }

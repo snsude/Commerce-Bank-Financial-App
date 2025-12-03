@@ -1,34 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import NavBar from './NavBar';
 
 const ChatBot = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [inputText, setInputText] = useState('');
   const [activeChat, setActiveChat] = useState(0);
+  const [inputText, setInputText] = useState('');
 
+  // Initial empty chat
   const chatHistory = [
-    
+    {
+      id: 0,
+      title: "New Chat",
+      date: new Date().toLocaleDateString(),
+      messages: []
+    }
   ];
 
   const [chats, setChats] = useState(chatHistory);
 
-  const handleSend = () => {
-    if (inputText.trim()) {
-      const updatedChats = [...chats];
-      updatedChats[activeChat].messages.push({ type: 'user', text: inputText });
-      setChats(updatedChats);
-      setInputText('');
-      
-      setTimeout(() => {
-        const newChats = [...updatedChats];
-        newChats[activeChat].messages.push({ 
-          type: 'bot', 
-          text: 'I can help you with budgeting, savings goals, and financial planning!' 
-        });
-        setChats(newChats);
-      }, 1000);
+  const chatEndRef = useRef(null);
+
+  // Auto-scroll to bottom on new messages
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
+  }, [chats, activeChat]);
+
+  const handleSend = () => {
+    if (!inputText.trim()) return;
+
+    const updatedChats = [...chats];
+    updatedChats[activeChat].messages.push({ type: 'user', text: inputText });
+    setChats(updatedChats);
+    setInputText('');
+
+    setTimeout(() => {
+      const newChats = [...updatedChats];
+      newChats[activeChat].messages.push({
+        type: 'bot',
+        text: 'I can help you with budgeting, savings goals, and financial planning!'
+      });
+      setChats(newChats);
+    }, 1000);
   };
 
   const handleChatSelect = (chatId) => {
@@ -36,14 +50,14 @@ const ChatBot = () => {
   };
 
   return (
-    <div className="flex min-h-screen" style={{ backgroundColor: '#E0E0E0' }}>
+    <div className="flex h-screen w-screen overflow-hidden" style={{ backgroundColor: '#E0E0E0' }}>
       <NavBar />
-      
+
       {/* Chat History Sidebar */}
-      <div className="w-64 bg-gray-200 border-r-4" style={{ borderColor: '#89CE94' }}>
-        <div className="p-4">
+      <div className="w-64 bg-gray-200 border-r-4 flex-shrink-0" style={{ borderColor: '#89CE94' }}>
+        <div className="p-4 flex flex-col h-full">
           <h3 className="text-lg font-semibold mb-4" style={{ color: '#7D5BA6' }}>Chat History</h3>
-          <div className="space-y-2">
+          <div className="flex-1 overflow-y-auto space-y-2">
             {chats.map((chat) => (
               <div 
                 key={chat.id} 
@@ -60,14 +74,14 @@ const ChatBot = () => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
-        {/* Chatbot Title */}
-        <div className="px-8 py-4">
+      <div className="flex-1 flex flex-col h-full">
+        {/* Chatbot Header */}
+        <div className="px-8 py-4 flex-shrink-0">
           <h5 className="text-2xl text-gray-600 font-medium">Chatbot</h5>
         </div>
 
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto px-8 py-6">
+        <div className="flex-1 px-8 py-6 overflow-y-auto">
           <div className="max-w-3xl mx-auto space-y-6">
             {chats[activeChat].messages.map((message, index) => (
               <div key={index} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -90,11 +104,12 @@ const ChatBot = () => {
                 </div>
               </div>
             ))}
+            <div ref={chatEndRef} />
           </div>
         </div>
 
         {/* Input Area */}
-        <div className="px-8 py-6">
+        <div className="px-8 py-6 flex-shrink-0">
           <div className="max-w-3xl mx-auto flex items-center space-x-3">
             <input
               type="text"
@@ -115,9 +130,10 @@ const ChatBot = () => {
             This service is for general information only and not financial advice
           </p>
         </div>
+
         <div className="fixed bottom-4 right-4 text-xs text-gray-500">
-            App is owned by Team Nova in partner with Commerce Bank
-          </div>
+          App is owned by Team Nova in partner with Commerce Bank
+        </div>
       </div>
     </div>
   );

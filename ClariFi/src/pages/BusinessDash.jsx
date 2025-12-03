@@ -3,7 +3,13 @@ import NavBar from './NavBar';
 import PlotlyBusiness from './PlotlyBusiness';
 
 function BusinessDash() {
-  
+
+  // empty arrays for data
+  const budget = { used: 0, total: 1 };
+  const incomeData = [];
+  const expenseData = [];
+  const recentIncome = [];
+  const recentExpenses = [];
 
   const budgetPercentage = (budget.used / budget.total) * 100;
 
@@ -192,6 +198,7 @@ function BusinessDash() {
           </div>
           
         </div>
+
         <div style={{ 
           position: 'fixed', 
           bottom: '16px', 
@@ -205,6 +212,7 @@ function BusinessDash() {
         }}>
           App is owned by Team Nova in partner with Commerce Bank
         </div>
+
       </div>
     </div>
   );

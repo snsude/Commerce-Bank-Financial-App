@@ -3,12 +3,14 @@ import NavBar from './NavBar';
 
 const Goals = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
- 
+
+  // Backend-ready: empty default array
+  const [goals, setGoals] = useState([]);
 
   const [newGoal, setNewGoal] = useState({ name: "", amount: "" });
   const [showAddGoal, setShowAddGoal] = useState(false);
 
-  
+  // EDIT GOAL – store as strings so user can delete
   const [editGoalIndex, setEditGoalIndex] = useState(null);
   const [editData, setEditData] = useState({ name: "", total: "", current: "" });
 
@@ -30,7 +32,7 @@ const Goals = () => {
 
   const totalSaved = goals.reduce((acc, goal) => acc + goal.current, 0);
   const totalGoalAmount = goals.reduce((acc, goal) => acc + goal.total, 0);
-  const overallProgress = (totalSaved / totalGoalAmount) * 100;
+  const overallProgress = totalGoalAmount > 0 ? (totalSaved / totalGoalAmount) * 100 : 0;
 
   return (
     <div className="flex min-h-screen bg-gray-50" style={{ backgroundColor: '#E0E0E0' }}>
@@ -93,14 +95,14 @@ const Goals = () => {
                             ${goal.current.toLocaleString()} out of ${goal.total.toLocaleString()}
                           </span>
 
-                          {/* NEW: Edit Button */}
+                          {/* EDIT BUTTON */}
                           <button
                             onClick={() => {
                               setEditGoalIndex(index);
                               setEditData({
                                 name: goal.name,
-                                total: goal.total,
-                                current: goal.current,
+                                total: goal.total.toString(),
+                                current: goal.current.toString(),
                               });
                             }}
                             className="px-3 py-1 bg-[#7d5ba6] text-white rounded-md hover:bg-[#6d4f96]"
@@ -130,7 +132,7 @@ const Goals = () => {
               </div>
             </div>
 
-            {/* ADD GOAL */}
+            {/* ADD GOAL MODAL */}
             {showAddGoal && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                 <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
@@ -211,7 +213,7 @@ const Goals = () => {
                         type="number"
                         value={editData.total}
                         onChange={(e) =>
-                          setEditData({ ...editData, total: Number(e.target.value) })
+                          setEditData({ ...editData, total: e.target.value })
                         }
                         className="w-full px-4 py-2 border-2 border-[#86a59c] rounded-lg"
                       />
@@ -223,7 +225,7 @@ const Goals = () => {
                         type="number"
                         value={editData.current}
                         onChange={(e) =>
-                          setEditData({ ...editData, current: Number(e.target.value) })
+                          setEditData({ ...editData, current: e.target.value })
                         }
                         className="w-full px-4 py-2 border-2 border-[#86a59c] rounded-lg"
                       />
@@ -243,8 +245,8 @@ const Goals = () => {
                           updated[editGoalIndex] = {
                             ...updated[editGoalIndex],
                             name: editData.name,
-                            total: editData.total,
-                            current: editData.current,
+                            total: Number(editData.total),
+                            current: Number(editData.current),
                           };
                           setGoals(updated);
                           setEditGoalIndex(null);

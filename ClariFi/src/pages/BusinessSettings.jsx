@@ -3,6 +3,8 @@ import NavBar from './NavBar';
 
 export default function SettingsPageBusiness() {
   const [activeTab, setActiveTab] = useState('edit-profile');
+
+  // empty arrays for data
   const [businessName, setBusinessName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -64,7 +66,6 @@ export default function SettingsPageBusiness() {
     }
   };
 
-  // Get user initials
   const getInitials = (name) => {
     return name
       .split(' ')
@@ -203,7 +204,6 @@ export default function SettingsPageBusiness() {
                               />
                             </div>
                             
-                            {/* Password Requirements */}
                             <div className="p-4 bg-gray-50 rounded-lg border-2 border-[#86a59c]">
                               <p className="text-sm font-medium text-[#333333] mb-2">Password Requirements:</p>
                               <ul className="text-sm text-gray-600 space-y-1">
@@ -253,18 +253,12 @@ export default function SettingsPageBusiness() {
                 {/* Right Side */}
                 <div className="w-80 p-8 flex flex-col items-center justify-start flex-shrink-0">
                   <div className="flex flex-col items-center">
-                    {/* Profile Circle with Initials */}
                     <div className="w-32 h-32 rounded-full bg-[#89ce94] flex items-center justify-center mb-4">
                       <span className="text-4xl font-bold text-white">{getInitials(username)}</span>
                     </div>
                     
-                    {/* Business Name */}
                     <p className="text-sm font-semibold text-[#7d5ba6] mb-2">{businessName}</p>
-                    
-                    {/* Username */}
                     <h3 className="text-xl font-bold text-[#333333] mb-2">{username}</h3>
-                    
-                    {/* Email */}
                     <p className="text-sm text-gray-600">{email}</p>
                   </div>
                 </div>
@@ -272,7 +266,7 @@ export default function SettingsPageBusiness() {
             </div>
           </div>
 
-          {/* Footer Text */}
+          {/* Footer */}
           <div className="fixed bottom-4 right-4 text-xs text-gray-500">
             App is owned by Team Nova in partner with Commerce Bank
           </div>
