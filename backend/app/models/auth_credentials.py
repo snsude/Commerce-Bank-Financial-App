@@ -17,3 +17,4 @@ class AuthCredentials(Base):
     last_login = Column(DateTime, nullable=True)
 
     user = relationship("User", back_populates="auth_credentials")
+    
