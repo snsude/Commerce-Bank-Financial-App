@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Numeric, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
-from ..database import Base  # FIXED: relative import
+from ..database import Base
 
 
 class Transaction(Base):
@@ -14,5 +14,5 @@ class Transaction(Base):
     amount = Column(Numeric(12, 2), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
-    user = relationship("User")
+    user = relationship("User", back_populates="transactions")  # Added back_populates
     category = relationship("Category")

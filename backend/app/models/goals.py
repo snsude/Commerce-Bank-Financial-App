@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Numeric, Date, ForeignKey, DateT
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
-from ..database import Base  # FIXED: relative import
+from ..database import Base
 
 
 class Goal(Base):
@@ -18,4 +18,4 @@ class Goal(Base):
     status = Column(String(50), default="on track", nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
-    user = relationship("User")
+    user = relationship("User", back_populates="goals")  

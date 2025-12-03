@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Text, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
-from ..database import Base  # FIXED: relative import
+from ..database import Base
 
 
 class LLMLog(Base):
@@ -15,4 +15,4 @@ class LLMLog(Base):
     response = Column(Text, nullable=False)
     timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
 
-    user = relationship("User")
+    user = relationship("User", back_populates="llm_logs")  

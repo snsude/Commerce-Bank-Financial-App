@@ -1,14 +1,15 @@
-from sqlalchemy import Column, Integer, ForeignKey, Date, DateTime, UniqueConstraint
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
-from ..database import Base  # FIXED: relative import
+from ..database import Base
 
 
 class Budget(Base):
     __tablename__ = "budgets"
 
     id = Column(Integer, primary_key=True, index=True)
+    budget_id = Column(String, nullable=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     month = Column(Date, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -17,4 +18,4 @@ class Budget(Base):
         UniqueConstraint("user_id", "month", name="uq_budget_user_month"),
     )
 
-    user = relationship("User")
+    user = relationship("User", back_populates="budgets")
