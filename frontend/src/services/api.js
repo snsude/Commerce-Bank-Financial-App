@@ -1,269 +1,174 @@
-import axios from 'axios';
+import axios from "axios";
 
-// Use a static URL for development
-const API_BASE_URL = 'http://localhost:8000';
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  },
-  timeout: 10000,
-  withCredentials: false,
+const API = axios.create({
+  baseURL: "http://localhost:8000",
 });
 
-// Store the original request in case we need to retry
-let isRefreshing = false;
-let failedQueue = [];
-
-const processQueue = (error, token = null) => {
-  failedQueue.forEach(prom => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
-  });
-  failedQueue = [];
-};
-
-// Request interceptor for adding token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+// Add a request interceptor
+API.interceptors.request.use((config) => {
+  // FIRST try to get token from sessionStorage (most current)
+  let token = sessionStorage.getItem("access_token");
+  
+  // If not in sessionStorage, check localStorage
+  if (!token) {
+    token = localStorage.getItem("access_token");
   }
-);
+  
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  
+  return config;
+});
 
-// Response interceptor for handling errors
-api.interceptors.response.use(
+// Add a response interceptor to handle token expiration/errors
+API.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     const originalRequest = error.config;
-
-    // Handle 401 Unauthorized (token expired)
+    
+    // If error is 401 (Unauthorized) and we haven't tried to refresh yet
     if (error.response?.status === 401 && !originalRequest._retry) {
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then(token => {
-          originalRequest.headers.Authorization = `Bearer ${token}`;
-          return api(originalRequest);
-        }).catch(err => Promise.reject(err));
-      }
-
       originalRequest._retry = true;
-      isRefreshing = true;
-
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('user_data');
       
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
+      try {
+        // Clear all auth data
+        localStorage.removeItem("access_token");
+        sessionStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        sessionStorage.removeItem("refresh_token");
+        
+        // Redirect to login
+        window.location.href = "/Login";
+        
+        return Promise.reject(error);
+      } catch (refreshError) {
+        // If refresh fails, clear everything and redirect to login
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = "/Login";
+        return Promise.reject(refreshError);
       }
-      
-      isRefreshing = false;
-      processQueue(error, null);
     }
-
-    // Handle account lockout (423)
-    if (error.response?.status === 423) {
-      console.error('Account locked:', error.response.data.detail);
-      alert('Your account has been temporarily locked due to too many failed login attempts. Please try again later.');
-    }
-
+    
     return Promise.reject(error);
   }
 );
 
-// Auth API - Using YOUR working /register and /login endpoints
 export const authAPI = {
-  // Register using YOUR backend structure
-  register: async (userData) => {
-    try {
-      const response = await api.post('/register', userData);
+  // Login - expects object with email and password
+  login: (data) => {
+    return API.post("/auth/login", data).then(response => {
+      // Store token in BOTH sessionStorage (primary) and localStorage (backup)
+      if (response.data.access_token) {
+        sessionStorage.setItem("access_token", response.data.access_token);
+        localStorage.setItem("access_token", response.data.access_token);
+      }
+      if (response.data.refresh_token) {
+        sessionStorage.setItem("refresh_token", response.data.refresh_token);
+        localStorage.setItem("refresh_token", response.data.refresh_token);
+      }
       return response;
-    } catch (error) {
-      console.error('Registration error:', error);
-      throw error;
-    }
+    });
   },
 
-  // Login - sends JSON (not form data)
-  login: async (credentials) => {
-    try {
-      const response = await api.post('/login', {
-        email: credentials.email,
-        password: credentials.password
-      });
-      return response;
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
-    }
-  },
-
-  // Get current user profile
-  getProfile: () => api.get('/me'),
-
+  // Logout - requires authentication
   logout: () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user_data');
-    delete api.defaults.headers.common['Authorization'];
-  }
-};
-
-// Goals API - Using teammate's /goals/ endpoints
-export const goalsAPI = {
-  create: async (goalData) => {
-    // goalData: { name, type, target_amount, current_amount, target_date }
-    try {
-      const response = await api.post('/goals/', goalData);
-      return response;
-    } catch (error) {
-      console.error('Create goal error:', error);
-      throw error;
-    }
-  },
-
-  getAll: async () => {
-    try {
-      const response = await api.get('/goals/');
-      return response;
-    } catch (error) {
-      console.error('Get goals error:', error);
-      throw error;
-    }
-  },
-
-  updateProgress: async (goalId, currentAmount) => {
-    try {
-      // Your teammate's endpoint expects current_amount as a query parameter
-      const response = await api.patch(`/goals/${goalId}`, null, {
-        params: { current_amount: currentAmount }
+    return API.post("/auth/logout").then(response => {
+      // Clear ALL auth data on logout
+      localStorage.removeItem("access_token");
+      sessionStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      sessionStorage.removeItem("refresh_token");
+      
+      // Clear all user data
+      const userKeys = ["user_name", "user_email", "business_name", "user_type", "first_name", "last_name", "email"];
+      userKeys.forEach(key => {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
       });
+      
       return response;
-    } catch (error) {
-      console.error('Update goal error:', error);
+    }).catch(error => {
+      // Even if API call fails, clear local data
+      localStorage.clear();
+      sessionStorage.clear();
       throw error;
-    }
+    });
   },
 
-  delete: async (goalId) => {
-    try {
-      const response = await api.delete(`/goals/${goalId}`);
-      return response;
-    } catch (error) {
-      console.error('Delete goal error:', error);
-      throw error;
+  // Register Personal - expects object with firstname, lastname, email, password
+  registerPersonal: (data) => API.post("/auth/register/personal", data),
+
+  // Register Business Admin - expects object with fullname, businessname, email, password
+  registerBusinessAdmin: (data) => API.post("/auth/register/business_admin", data),
+
+  // Register Business Subuser - expects object with fullname, businessemail, email, password
+  registerBusinessSub: (data) => API.post("/auth/register/business_subuser", data),
+  
+  getProfile: () => API.get("/auth/profile"),
+  
+  updatePersonalProfile: (data) => API.put("/auth/profile/personal", data),
+  
+  updateBusinessProfile: (data) => API.put("/auth/profile/business", data),
+  
+  updateSubUserProfile: (data) => API.put("/auth/profile/subuser", data),
+  
+  changePassword: (data) => API.put("/auth/change-password", data),
+  
+  debugHeaders: () => API.get("/auth/debug-headers"),
+};
+
+// NEW: Chatbot API
+export const chatbotAPI = {
+  // Send a message to the chatbot
+  sendMessage: (message, sessionId = null) => {
+    return API.post("/chatbot/message", {
+      message: message,
+      session_id: sessionId
+    });
+  },
+
+  // Get chat history
+  getChatHistory: (limit = 50, sessionId = null) => {
+    const params = { limit };
+    if (sessionId) {
+      params.session_id = sessionId;
     }
+    return API.get("/chatbot/history", { params });
+  },
+
+  // Clear chat history
+  clearChatHistory: (sessionId = null) => {
+    const params = sessionId ? { session_id: sessionId } : {};
+    return API.delete("/chatbot/history", { params });
+  },
+
+  // Get all sessions
+  getSessions: () => {
+    return API.get("/chatbot/sessions");
+  },
+
+  // Confirm delete operation
+  confirmDelete: (confirmationId, confirm = true) => {
+    return API.post("/chatbot/confirm-delete", {
+      confirmation_id: confirmationId,
+      confirm: confirm
+    });
+  },
+
+  // Get pending deletes
+  getPendingDeletes: () => {
+    return API.get("/chatbot/pending-deletes");
+  },
+
+  // Health check
+  healthCheck: () => {
+    return API.get("/chatbot/health");
   }
 };
 
-// Users API
-export const usersAPI = {
-  getCurrentUser: () => api.get('/users/me'),
-  getById: (id) => api.get(`/users/${id}`),
-  update: (updates) => api.put('/users/update', updates),
+export default {
+  authAPI,
+  chatbotAPI
 };
-
-// Budgets API
-export const budgetsAPI = {
-  create: (budgetData) => api.post('/budgets/', budgetData),
-  getAll: () => api.get('/budgets/'),
-  getEntries: (budgetId) => api.get(`/budget-entries/${budgetId}`),
-  addEntry: (entryData) => api.post('/budget-entries/', entryData),
-};
-
-// Transactions API
-export const transactionsAPI = {
-  create: (transactionData) => api.post('/transactions/', transactionData),
-  getAll: () => api.get('/transactions/'),
-  getByCategory: (categoryId) => api.get(`/transactions/by-category/${categoryId}`),
-};
-
-// Categories API
-export const categoriesAPI = {
-  getAll: () => api.get('/categories/'),
-};
-
-// LLM API
-export const llmAPI = {
-  log: (logData) => api.post('/llm-logs/', logData),
-  getLogs: () => api.get('/llm-logs/'),
-};
-
-// Profiles API
-export const profilesAPI = {
-  createOrUpdate: (profileData) => api.post('/profiles/', profileData),
-  getMyProfile: () => api.get('/profiles/me'),
-  delete: () => api.delete('/profiles/me'),
-};
-
-// Helper functions
-export const isAuthenticated = () => {
-  const token = localStorage.getItem('access_token');
-  return !!token;
-};
-
-export const getUserData = () => {
-  const userData = localStorage.getItem('user_data');
-  return userData ? JSON.parse(userData) : null;
-};
-
-export const setAuthData = (token, userData) => {
-  localStorage.setItem('access_token', token);
-  localStorage.setItem('user_data', JSON.stringify(userData));
-  api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-};
-
-// Handle successful login/registration - matches YOUR backend response structure
-export const handleAuthSuccess = (response) => {
-  const { access_token, user_id, email, role_id } = response.data;
-  
-  setAuthData(access_token, {
-    id: user_id,
-    email: email,
-    role_id: role_id
-  });
-  
-  return response;
-};
-
-// Get user role name based on role_id
-export const getUserRole = (role_id) => {
-  // Based on your backend Roles table:
-  // role_id 1 = 'user' (personal account)
-  // role_id 2 = 'admin' (business account creator)
-  // role_id 3 = 'sub_user' (business account member)
-  const roleMap = {
-    1: 'user',
-    2: 'admin', 
-    3: 'sub_user'
-  };
-  return roleMap[role_id] || 'user';
-};
-
-// Route users to appropriate dashboard based on role
-export const getRedirectPath = (role_id) => {
-  const role = getUserRole(role_id);
-  
-  switch(role) {
-    case 'admin':
-      return '/admin-dashboard'; // Business owner dashboard
-    case 'sub_user':
-      return '/sub-user-dashboard'; // Business member dashboard
-    case 'user':
-    default:
-      return '/dashboard'; // Personal user dashboard
-  }
-};
-
-export default api;

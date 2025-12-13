@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { authAPI } from "../services/api";
+import { initializeUserData } from "../utils/UserDataInit";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -9,36 +10,64 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // Clear ALL data on component mount
+  useEffect(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+    console.log("Login page: All storage cleared");
+  }, []);
+
   const handleSubmit = async () => {
     setError("");
 
-    // Validation
     if (!username || !password) {
       setError("Please fill in all fields");
       return;
     }
 
     try {
+      // 1. CLEAR EVERYTHING FIRST
+      sessionStorage.clear();
+      localStorage.clear();
+      console.log("Pre-login: All storage cleared");
+
+      // 2. Login
       const response = await authAPI.login({
         email: username,
         password: password,
       });
 
-      // Store token and user info
-      localStorage.setItem("access_token", response.data.access_token);
-      localStorage.setItem("user_id", response.data.user_id);
-      localStorage.setItem("user_type", response.data.user_type); // assuming this exists
-
       console.log("Login successful:", response.data);
 
-      // Navigate based on user type
-      if (response.data.user_type === "business") {
-        navigate("/BusinessDash");
+      // 3. Store ONLY tokens initially
+      if (response.data.access_token) {
+        sessionStorage.setItem("access_token", response.data.access_token);
+        localStorage.setItem("access_token", response.data.access_token);
+      }
+      if (response.data.refresh_token) {
+        sessionStorage.setItem("refresh_token", response.data.refresh_token);
+        localStorage.setItem("refresh_token", response.data.refresh_token);
+      }
+
+      // 4. Initialize user data from API
+      await initializeUserData(authAPI);
+
+      // 5. Navigate based on user type
+      const userType = response.data.user_type;
+      console.log("Navigating to dashboard for user type:", userType);
+
+      if (userType === "business_admin") {
+        navigate("/BusinessDash", { replace: true });
+      } else if (userType === "business_subuser") {
+        navigate("/SubUserDash", { replace: true });
       } else {
-        navigate("/Dashboard");
+        navigate("/Dashboard", { replace: true });
       }
     } catch (error) {
       console.error("Login failed:", error);
+      // Clear everything on error
+      sessionStorage.clear();
+      localStorage.clear();
       setError(
         error.response?.data?.detail || "Login failed. Please try again."
       );

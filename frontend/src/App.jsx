@@ -10,13 +10,14 @@ import SubUserCreate from './pages/SubUserCreate'
 import Dashboard from './pages/Dashboard'
 import Goals from './pages/Goals'
 import Settings from './pages/Settings'
-import ChatBot  from './pages/Chatbot';
+import ChatBot  from './pages/ChatBot';
 import BusinessDash from './pages/BusinessDash'
 import SubUserDash from './pages/SubUserDash'
 import BusinessSettings from './pages/BusinessSettings'
 import SubUserSettings from './pages/SubUserSettings';
 import PlotlyBusiness from './pages/PlotlyBusiness';
 import PlotlyPersonal from './pages/PlotlyPersonal';
+import BusinessGoals from './pages/BusinessGoals';
 
 function App() {
   return (
@@ -40,7 +41,8 @@ function App() {
           <Route path="/SubUserDash" element={<SubUserDash/>}/>
           <Route path="/BusinessSettings" element={<BusinessSettings/>}/>
           <Route path="/SubUserSettings" element={<SubUserSettings/>}/>
-          <Route path="/PlotlyBusiness" element={<PlotlyBusiness/>}/>
+          <Route path="/PlotlyBusiness" element={<PlotlyBusiness />} />
+          <Route path="/BusinessGoals" element={<BusinessGoals />} />
 
 
         </Routes>

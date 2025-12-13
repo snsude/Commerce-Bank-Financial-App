@@ -1,29 +1,6 @@
 import { useEffect, useRef } from 'react';
 import Plotly from 'plotly.js-dist';
 
-
-const CATEGORY_COLORS = {
-  'Income Sources': '#4BC0C0',
-  'Housing': '#9966FF',
-  'Food': '#FF6384',
-  'Salary': '#36A2EB',
-  'Freelance': '#FF9F40',
-  'Investment': '#8B5CF6',
-  'Other Income': '#C9CBCF',
-  'Rent': '#4D9F6E',
-  'Utilities': '#FFB347',
-  'Groceries': '#FF7F50',
-  'Dining Out': '#FF9ACD',
-  'Transportation': '#36A2EB',
-  'Entertainment': '#FFCE56',
-  'Healthcare': '#FF6F61',
-  'Insurance': '#9C27B0',
-  'Savings': '#00BFA5',
-  'Travel': '#FF9800',
-  'Education': '#3F51B5',
-  'Other Expense': '#BDBDBD'
-};
-
 export default function PlotlyPersonal({ data = [], hoveredIndex = null }) {
   const chartRef = useRef(null);
 
@@ -39,7 +16,7 @@ export default function PlotlyPersonal({ data = [], hoveredIndex = null }) {
 
     const labels = data.map(cat => cat.name);
     const values = data.map(cat => cat.value);
-    const colors = data.map(cat => CATEGORY_COLORS[cat.name] || CATEGORY_COLORS['Other Expense']);
+    const colors = data.map(cat => cat.color || '#36A2EB');
     const pull = data.map(() => 0);
 
     const plotData = [{

@@ -1,15 +1,18 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-
-from database import Base  # FIXED: relative import
-
+from database.connection import Base
 
 class Category(Base):
     __tablename__ = "categories"
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    kind = Column(String, nullable=False)  # "income" or "expense"
-    parent_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), unique=True, nullable=False)
+    kind = Column(String(20), nullable=False)
+    parent_id = Column(Integer, ForeignKey("categories.id"))
 
-    parent = relationship("Category", remote_side=[id], backref="children")
+    # Self-referential relationship for subcategories
+    parent = relationship("Category", remote_side=[id], backref="subcategories")
+    
+    # Relationships
+    transactions = relationship("Transaction", back_populates="category")
+    budget_entries = relationship("BudgetEntry", back_populates="category")

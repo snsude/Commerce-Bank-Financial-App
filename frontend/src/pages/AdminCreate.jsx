@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authAPI } from "../services/api";
 
-//WORK IN PROGRESS PAGE FOR
-
 const AdminCreate = () => {
   const [fullname, setFullName] = useState("");
   const [businessname, setBusinessName] = useState("");
@@ -33,28 +31,26 @@ const AdminCreate = () => {
     }
 
     try {
-      const response = await authAPI.register({
+      console.log("Starting registration with:", { fullname, businessname, email });
+      
+      // FIXED: Pass data as an object
+      const response = await authAPI.registerBusinessAdmin({
+        fullname,
+        businessname,
         email,
-        password,
-        display_name: fullname,
-        occupation: businessname,
-        admin_email: null, // Business admin
+        password
       });
-
-      // Store token
-      localStorage.setItem("access_token", response.data.access_token);
-      localStorage.setItem("user_id", response.data.user_id);
 
       console.log("Business registration successful:", response.data);
       navigate("/Login");
     } catch (error) {
       console.error("Registration failed:", error);
-      setError(
-        error.response?.data?.detail || "Registration failed. Please try again."
-      );
+      console.log("Error response:", error.response);
+      const errorMsg = error.response?.data?.detail || "Registration failed. Please try again.";
+      console.log("Setting error message:", errorMsg);
+      setError(errorMsg);
     }
   };
-
   return (
     <div className="bg-gray-100 flex justify-center items-center h-screen overflow-hidden">
       <div className="w-1/2 h-screen hidden lg:block">

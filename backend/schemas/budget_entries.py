@@ -1,16 +1,16 @@
 from pydantic import BaseModel
-from schemas.shared import ORMBase
 
-
-class BudgetEntryIn(BaseModel):
-    budget_id: int
+class BudgetEntryBase(BaseModel):
     category_id: int
     planned: float
 
+class BudgetEntryCreate(BudgetEntryBase):
+    pass
 
-class BudgetEntryOut(ORMBase):
+class BudgetEntryOut(BudgetEntryBase):
     id: int
     budget_id: int
-    category_id: int
-    planned: float
     user_id: int
+    
+    class Config:
+        from_attributes = True

@@ -1,28 +1,14 @@
 # schemas/__init__.py
-from .auth import LoginRequest, LoginResponse
-from .user import UserLogin, UserCreate, UserUpdate, UserOut
-from .profiles import ProfileCreate, ProfileUpdate, ProfileOut
-from .categories import CategoryOut
-from .transactions import TransactionIn, TransactionOut
-from .goals import GoalCreate, GoalUpdate, GoalOut
-from .budgets import BudgetIn, BudgetOut
-from .budget_entries import BudgetEntryIn, BudgetEntryOut
-from .llm_logs import LLMLogCreate, LLMLogOut
+from .budget_entries import BudgetEntryCreate, BudgetEntryOut, BudgetEntryBase
+from .budgets import BudgetCreate, BudgetOut, BudgetBase
+from .categories import CategoryCreate, CategoryOut, CategoryBase
+from .transactions import TransactionCreate, TransactionOut, TransactionBase
+from .llmlogs import LLMLogCreate, LLMLogOut, LLMLogBase
 
 __all__ = [
-    # Auth
-    "LoginRequest", "LoginResponse",
-    
-    # Users
-    "UserLogin", "UserCreate", "UserUpdate", "UserOut",
-    
-    # Profiles
-    "ProfileCreate", "ProfileUpdate", "ProfileOut",
-            
-    # Financial
-    "CategoryOut", "TransactionIn", "TransactionOut", "GoalCreate", "GoalUpdate", "GoalOut",
-    "BudgetIn", "BudgetOut", "BudgetEntryIn", "BudgetEntryOut",
-    
-    # LLM
-    "LLMLogCreate", "LLMLogOut",
+    "BudgetEntryCreate", "BudgetEntryOut", "BudgetEntryBase",
+    "BudgetCreate", "BudgetOut", "BudgetBase",
+    "CategoryCreate", "CategoryOut", "CategoryBase",
+    "TransactionCreate", "TransactionOut", "TransactionBase",
+    "LLMLogCreate", "LLMLogOut", "LLMLogBase",
 ]

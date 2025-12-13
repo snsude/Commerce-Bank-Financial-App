@@ -1,78 +1,97 @@
-# backend/app/main.py
-# COMPLETE FILE - Replace everything
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-from dotenv import load_dotenv
-load_dotenv()
-
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-import logging
+from fastapi.openapi.utils import get_openapi
+from sqlalchemy import text
 
+from database.connection import Base, engine, SessionLocal
+from routers.auth_router import router as auth_router
+from routers.goals import router as goals_router
+from routers.dashboard_router import router as dashboard_router
+from routers.chat_router import router as chat_router  # NEW
+from core.config import settings
 
+print(">>> USING DATABASE URL:", settings.DATABASE_URL)
 
+from models.user import User
+from models.auth import AuthCredentials
+from models.profile import Profile
+from models.business import Business
+from models.role import Role
+from models.categories import Category
+from models.transactions import Transaction
+from models.budgets import Budget
+from models.budget_entries import BudgetEntry
+from models.llmlogs import LLMLog
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# Create FastAPI app
 app = FastAPI(title="ClariFi API", version="1.0.0")
 
-# CORS middleware - CRITICAL: Must be added BEFORE routes
+Base.metadata.create_all(bind=engine)
+
+# configuration
+origins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://localhost:5174",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:3000",
+    "*",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific origins
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"],
+    max_age=3600,
 )
 
-# Root endpoint
+# Include routers
+app.include_router(auth_router)
+app.include_router(goals_router)
+app.include_router(dashboard_router)
+app.include_router(chat_router)  # NEW
+
 @app.get("/")
 def root():
-    return {"message": "ClariFi Backend API", "version": "1.0.0", "status": "running"}
+    return {"status": "OK"}
 
-@app.get("/health")
-def health_check():
-    return {"status": "healthy"}
-
-# Initialize database on startup
-@app.on_event("startup")
-def on_startup():
-    logger.info("Initializing database...")
-    from database import init_db
+@app.get("/db-test")
+def db_test():
     try:
-        init_db()
-        logger.info("Database initialized successfully")
+        db = SessionLocal()
+        db.execute(text("SELECT 1;"))
+        return {"db_status": "connected"}
     except Exception as e:
-        logger.error(f"Database initialization failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        db.close()
 
-# Import and include routers AFTER app creation
-from routers.auth import router as auth_router
-from routers.users import router as users_router
-from routers.categories import router as categories_router
-from routers.budgets import router as budget_router
-from routers.goals import router as goals_router
-from routers.llm_logs import router as llm_logs_router
-from routers.budget_entries import router as budget_entries_router
-from routers.transactions import router as transactions_router
-from routers.profiles import router as profiles_router
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
 
+    openapi_schema = get_openapi(
+        title="ClariFi API",
+        version="1.0.0",
+        description="API docs",
+        routes=app.routes,
+    )
 
+    openapi_schema["components"]["securitySchemes"] = {
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+    }
 
-# Include routers - auth has NO PREFIX to match frontend
-app.include_router(auth_router)  # /register, /login, /me
-app.include_router(users_router)
-app.include_router(categories_router)
-app.include_router(budget_router)
-app.include_router(goals_router)
-app.include_router(llm_logs_router)
-app.include_router(budget_entries_router)
-app.include_router(transactions_router)
-app.include_router(profiles_router)
+    for path in openapi_schema["paths"].values():
+        for method in path.values():
+            method.setdefault("security", [{"BearerAuth": []}])
 
-logger.info("All routers registered successfully")
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi

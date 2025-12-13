@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authAPI } from "../services/api";
 
-//WORK IN PROGRESS PAGE FOR
-
 const PersonalCreate = () => {
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
@@ -32,24 +30,38 @@ const PersonalCreate = () => {
       return;
     }
 
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
     try {
-      const response = await authAPI.register({
+      // FIXED: Pass data as an object
+      const response = await authAPI.registerPersonal({
+        firstname,
+        lastname,
         email,
-        password,
-        display_name: `${firstname} ${lastname}`,
-        admin_email: null, // Personal account
+        password
       });
 
-      // Store token
-      localStorage.setItem("access_token", response.data.access_token);
-      localStorage.setItem("user_id", response.data.user_id);
-
-      console.log("Registration successful:", response.data);
+      console.log("Registration successful:", response);
+      
+      // Optional: auto-login after registration
+      // const loginResponse = await authAPI.login({
+      //   email,
+      //   password
+      // });
+      // localStorage.setItem("access_token", loginResponse.data.access_token);
+      
       navigate("/Login");
     } catch (error) {
       console.error("Registration failed:", error);
       setError(
-        error.response?.data?.detail || "Registration failed. Please try again."
+        error.response?.data?.detail || 
+        error.response?.data?.message || 
+        "Registration failed. Please try again."
       );
     }
   };
@@ -114,7 +126,7 @@ const PersonalCreate = () => {
                 Email
               </label>
               <input
-                type="text"
+                type="email"
                 id="email"
                 name="email"
                 value={email}
@@ -141,11 +153,11 @@ const PersonalCreate = () => {
 
             <div className="mb-4">
               <label htmlFor="confirm" className="block text-white">
-                Confrim Password
+                Confirm Password
               </label>
               <input
                 type="password"
-                id="confrim"
+                id="confirm"
                 name="confirm"
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
@@ -153,7 +165,7 @@ const PersonalCreate = () => {
                 autoComplete="off"
               />
             </div>
-            {/*replace this with another password box, but it will be for confirming password. what other fields will we require*/}
+            
             <button
               onClick={handleCreate}
               className="bg-[#89CE94] hover:bg-[#89A59C] text-white font-semibold rounded-md py-2 px-4 w-full"

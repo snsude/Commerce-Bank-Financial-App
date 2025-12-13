@@ -1,18 +1,18 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
+from typing import Optional
 from datetime import datetime
 
-
-class TransactionIn(BaseModel):
-    user_id: int  # Added to match database
-    category_id: int
-    amount: float   # positive = income, negative = expense
-
-
-class TransactionOut(BaseModel):
-    id: int
-    user_id: int  # Added to match database
-    category_id: int
+class TransactionBase(BaseModel):
+    category_id: Optional[int] = None
     amount: float
-    created_at: datetime
 
-    model_config = ConfigDict(from_attributes=True)
+class TransactionCreate(TransactionBase):
+    pass
+
+class TransactionOut(TransactionBase):
+    id: int
+    user_id: int
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True

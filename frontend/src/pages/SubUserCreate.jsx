@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authAPI } from "../services/api";
 
-//WORK IN PROGRESS PAGE FOR
-
 const SubUserCreate = () => {
   const [fullname, setFullName] = useState("");
   const [businessemail, setBusinessEmail] = useState("");
@@ -33,16 +31,13 @@ const SubUserCreate = () => {
     }
 
     try {
-      const response = await authAPI.register({
+      // FIXED: Pass data as an object
+      const response = await authAPI.registerBusinessSub({
+        fullname,
+        businessemail,
         email,
-        password,
-        display_name: fullname,
-        admin_email: businessemail, // Link to admin
+        password
       });
-
-      // Store token
-      localStorage.setItem("access_token", response.data.access_token);
-      localStorage.setItem("user_id", response.data.user_id);
 
       console.log("Sub-user registration successful:", response.data);
       navigate("/Login");

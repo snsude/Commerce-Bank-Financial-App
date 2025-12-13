@@ -1,21 +1,23 @@
-from sqlalchemy import Column, Integer, String, Numeric, Date, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Date, TIMESTAMP
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-from datetime import datetime
-
-from database import Base
-
+from database.connection import Base
 
 class Goal(Base):
     __tablename__ = "goals"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    name = Column(String(100), nullable=False)
-    type = Column(String(50), nullable=False)  # "savings" or "debt"
-    target_amount = Column(Numeric(12, 2), nullable=False)
-    current_amount = Column(Numeric(12, 2), default=0, nullable=False)
-    target_date = Column(Date, nullable=True)
-    status = Column(String(50), default="on track", nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
-    user = relationship("User", back_populates="goals")  
+    name = Column(String, nullable=False)
+    type = Column(String, nullable=False)
+    target_amount = Column(Float, nullable=False)
+    current_amount = Column(Float, default=0.0)
+    target_date = Column(Date, nullable=True)
+
+    status = Column(String, default="on_track")
+
+    created_at = Column(TIMESTAMP, server_default=func.now())
+
+    user = relationship("User", back_populates="goals")
+

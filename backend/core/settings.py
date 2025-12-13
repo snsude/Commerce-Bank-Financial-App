@@ -1,1 +1,0 @@
-# Environment variables (JWT_SECRET_KEY, ALGO, expires, etc.)

@@ -1,7 +1,16 @@
-from schemas.shared import ORMBase
+from pydantic import BaseModel
+from typing import Optional
 
-class CategoryOut(ORMBase):
-    id: int
+class CategoryBase(BaseModel):
     name: str
-    kind: str          # "income" or "expense"
-    parent_id: int | None = None
+    kind: str  
+    parent_id: Optional[int] = None
+
+class CategoryCreate(CategoryBase):
+    pass
+
+class CategoryOut(CategoryBase):
+    id: int
+    
+    class Config:
+        from_attributes = True

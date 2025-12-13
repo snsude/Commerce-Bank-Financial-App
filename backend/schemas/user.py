@@ -1,56 +1,18 @@
-# backend/app/schemas/user.py
-# COMPLETE FILE - Updated to match database schema
-
-from pydantic import BaseModel, EmailStr
-from datetime import datetime
+from pydantic import BaseModel
 from typing import Optional
-from schemas.shared import ORMBase
+from datetime import datetime
+from .auth_credentials import AuthCredentialsOut
 
 
-# Login schema (for /login endpoint)
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
-
-
-# User creation schema (for /register endpoint)
-class UserCreate(BaseModel):
-    email: EmailStr
-    password: str
-    display_name: str  # Add this field
-    age: Optional[int] = None
-    gender: Optional[str] = None
-    occupation: Optional[str] = None
-    role_id: Optional[int] = None
-    business_id: Optional[int] = None
-    admin_id: Optional[int] = None
-    admin_email: Optional[str] = None  # Add this line
-    model_config = {
-        "from_attributes": False
-    }
-
-
-# User update schema
-class UserUpdate(BaseModel):
-    email: Optional[EmailStr] = None
-    role_id: Optional[int] = None
-    business_id: Optional[int] = None
-    admin_email: Optional[EmailStr] = None
-
-    model_config = {
-        "from_attributes": False
-    }
-
-
-# User output schema
-class UserOut(ORMBase):
+class UserOut(BaseModel):
     id: int
-    email: EmailStr
-    role_id: Optional[int] = None
-    business_id: Optional[int] = None
-    admin_email: Optional[EmailStr] = None
+    email: str
+    role_id: int
+    business_id: Optional[int]
+    admin_email: Optional[str]
     created_at: datetime
 
-    model_config = {
-        "from_attributes": True
-    }
+    auth_credentials: Optional[AuthCredentialsOut] = None
+
+    class Config:
+        orm_mode = True
